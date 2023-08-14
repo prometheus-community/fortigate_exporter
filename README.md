@@ -436,6 +436,7 @@ To improve security, limit permissions to required ones only (least privilege pr
 |BGP/NeighborPaths/IPv6       | netgrp.route-cfg   |api/v2/monitor/router/bgp/paths6 |
 |BGP/Neighbors/IPv4           | netgrp.route-cfg   |api/v2/monitor/router/bgp/neighbors |
 |BGP/Neighbors/IPv6           | netgrp.route-cfg   |api/v2/monitor/router/bgp/neighbors6 |
+|Firewall/IpPool              | fwgrp.policy       |api/v2/monitor/firewall/ippool |
 |Firewall/LoadBalance         | fwgrp.others       |api/v2/monitor/firewall/load-balance |
 |Firewall/Policies            | fwgrp.policy       |api/v2/monitor/firewall/policy/select<br>api/v2/monitor/firewall/policy6/select<br>api/v2/cmdb/firewall/policy<br>api/v2/cmdb/firewall/policy6 |
 |License/Status               | *any*              |api/v2/monitor/license/status/select |
