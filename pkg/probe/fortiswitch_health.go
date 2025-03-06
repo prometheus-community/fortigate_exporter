@@ -2,6 +2,7 @@ package probe
 
 import (
 	"log"
+	"fmt"
 
 	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
@@ -11,48 +12,48 @@ func probeSwitchHealth(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Met
 	var (
 		mSumCPU = prometheus.NewDesc(
 			"fortiswitch_health_summary_cpu",
-			"Summary CPU health",
-			[]string{"rating", "fortiswitch", "VDOM"}, nil,
+			"Boolean indicator if CPU health is good",
+			[]string{"value", "rating", "fortiswitch", "vdom"}, nil,
 		)
 		mSumMem = prometheus.NewDesc(
-			"fortiswitch_health_summary_mem",
-			"Summary MEM health",
-			[]string{"rating", "fortiswitch", "VDOM"}, nil,
+			"fortiswitch_health_summary_memory",
+			"Boolean indicator if Memory health is good",
+			[]string{"value", "rating", "fortiswitch", "vdom"}, nil,
 		)
 		mSumUpTime = prometheus.NewDesc(
 			"fortiswitch_health_summary_uptime",
-			"Summary Uptime",
-			[]string{"rating", "fortiswitch", "VDOM"}, nil,
+			"Boolean indicator if Uptime is good",
+			[]string{"value", "rating", "fortiswitch", "vdom"}, nil,
 		)
 		mSumTemp = prometheus.NewDesc(
-			"fortiswitch_health_summary_temp",
-			"Summary Temperature health",
-			[]string{"rating", "fortiswitch", "VDOM"}, nil,
+			"fortiswitch_health_summary_temperature",
+			"Boolean indicator if Temperature health is good",
+			[]string{"value", "rating", "fortiswitch", "vdom"}, nil,
 		)
 		mTemp = prometheus.NewDesc(
 			"fortiswitch_health_temperature",
 			"Temperature per switch sensor",
-			[]string{"unit", "module", "fortiswitch", "VDOM"}, nil,
+			[]string{"unit", "module", "fortiswitch", "vdom"}, nil,
 		)
 		mCpuUser = prometheus.NewDesc(
 			"fortiswitch_health_performance_stats_cpu_user",
 			"Fortiswitch CPU user usage",
-			[]string{"unit", "fortiswitch", "VDOM"}, nil,
+			[]string{"unit", "fortiswitch", "vdom"}, nil,
 		)
 		mCpuSystem = prometheus.NewDesc(
 			"fortiswitch_health_performance_stats_cpu_system",
 			"Fortiswitch CPU system usage",
-			[]string{"unit", "fortiswitch", "VDOM"}, nil,
+			[]string{"unit", "fortiswitch", "vdom"}, nil,
 		)
 		mCpuIdle = prometheus.NewDesc(
 			"fortiswitch_health_performance_stats_cpu_idle",
 			"Fortiswitch CPU idle",
-			[]string{"unit", "fortiswitch", "VDOM"}, nil,
+			[]string{"unit", "fortiswitch", "vdom"}, nil,
 		)
 		mCpuNice = prometheus.NewDesc(
 			"fortiswitch_health_performance_stats_cpu_nice",
 			"Fortiswitch CPU nice usage",
-			[]string{"unit", "fortiswitch", "VDOM"}, nil,
+			[]string{"unit", "fortiswitch", "vdom"}, nil,
 		)
 	)
 	type Sum struct {
@@ -113,39 +114,71 @@ func probeSwitchHealth(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Met
 
 	type swResponse struct {
 		Results map[string]Results `json:"results"`
-		VDOM    string
+		Vdom    string
 	}
-	var r swResponse
-	//var r map[string]swResponse
-	//var r []swResponse
 
-	if err := c.Get("api/v2/monitor/switch-controller/managed-switch/health", "vdom=root", &r); err != nil {
+	var apiPath string
+
+	if meta.VersionMajor > 7 || (meta.VersionMajor == 7 && meta.VersionMinor >= 6) {
+		apiPath = "api/v2/monitor/switch-controller/managed-switch/health-status"
+	} else {
+		apiPath = "api/v2/monitor/switch-controller/managed-switch/health"
+	}
+
+	var r swResponse
+
+	if err := c.Get(apiPath, "vdom=root", &r); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false
 	}
+
 	m := []prometheus.Metric{}
-	//for _, sw := range r {
+
 	for fswitch, hr := range r.Results {
 
-		m = append(m, prometheus.MustNewConstMetric(mSumCPU, prometheus.GaugeValue, hr.Summary.CPU.Value, hr.Summary.CPU.Rating, fswitch, r.VDOM))
-		m = append(m, prometheus.MustNewConstMetric(mSumMem, prometheus.GaugeValue, hr.Summary.Memory.Value, hr.Summary.Memory.Rating, fswitch, r.VDOM))
-		m = append(m, prometheus.MustNewConstMetric(mSumUpTime, prometheus.GaugeValue, hr.Summary.Uptime.Value, hr.Summary.Uptime.Rating, fswitch, r.VDOM))
-		m = append(m, prometheus.MustNewConstMetric(mSumTemp, prometheus.GaugeValue, hr.Summary.Temperature.Value, hr.Summary.Temperature.Rating, fswitch, r.VDOM))
+		var cpuGood float64
+		if hr.Summary.CPU.Rating == "good" {
+			cpuGood = 1
+		} else {
+			cpuGood = 0
+		}
+		m = append(m, prometheus.MustNewConstMetric(mSumCPU, prometheus.GaugeValue, cpuGood, fmt.Sprintf("%.0f",  hr.Summary.CPU.Value), hr.Summary.CPU.Rating, fswitch, r.Vdom))
+
+		var memGood float64
+		if hr.Summary.Memory.Rating == "good" {
+			memGood = 1
+		} else {
+			memGood = 0
+		}
+		m = append(m, prometheus.MustNewConstMetric(mSumMem, prometheus.GaugeValue, memGood, fmt.Sprintf("%0.f", hr.Summary.Memory.Value), hr.Summary.Memory.Rating, fswitch, r.Vdom))
+
+		var uptimeGood float64
+		if hr.Summary.Uptime.Rating == "good" {
+			uptimeGood = 1
+		} else {
+			uptimeGood = 0
+		}
+		m = append(m, prometheus.MustNewConstMetric(mSumUpTime, prometheus.GaugeValue,uptimeGood, fmt.Sprintf("%0.f", hr.Summary.Uptime.Value), hr.Summary.Uptime.Rating, fswitch, r.Vdom))
+
+		var tempGood float64
+		if hr.Summary.Temperature.Rating == "good" {
+			tempGood = 1
+		} else {
+			tempGood = 0
+		}
+		m = append(m, prometheus.MustNewConstMetric(mSumTemp, prometheus.GaugeValue, tempGood, fmt.Sprintf("%0.f", hr.Summary.Temperature.Value), hr.Summary.Temperature.Rating, fswitch, r.Vdom))
 
 		for _, ts := range hr.Temperature {
-			m = append(m, prometheus.MustNewConstMetric(mTemp, prometheus.GaugeValue, ts.Status.Value, ts.Status.Unit, ts.Module, fswitch, r.VDOM))
+			m = append(m, prometheus.MustNewConstMetric(mTemp, prometheus.GaugeValue, ts.Status.Value, ts.Status.Unit, ts.Module, fswitch, r.Vdom))
 		}
 
 		CpuUnit := hr.PerformanceStatus.CPU.System.Unit
-		/*if CpuUnit == "%" {
-			CpuUnit = "%%"
-		}*/
 
-		m = append(m, prometheus.MustNewConstMetric(mCpuUser, prometheus.GaugeValue, hr.PerformanceStatus.CPU.User.Value, CpuUnit, fswitch, r.VDOM))
-		m = append(m, prometheus.MustNewConstMetric(mCpuNice, prometheus.GaugeValue, hr.PerformanceStatus.CPU.Nice.Value, CpuUnit, fswitch, r.VDOM))
-		m = append(m, prometheus.MustNewConstMetric(mCpuSystem, prometheus.GaugeValue, hr.PerformanceStatus.CPU.System.Value, CpuUnit, fswitch, r.VDOM))
-		m = append(m, prometheus.MustNewConstMetric(mCpuIdle, prometheus.GaugeValue, hr.PerformanceStatus.CPU.Idle.Value, CpuUnit, fswitch, r.VDOM))
+		m = append(m, prometheus.MustNewConstMetric(mCpuUser, prometheus.GaugeValue, hr.PerformanceStatus.CPU.User.Value, CpuUnit, fswitch, r.Vdom))
+		m = append(m, prometheus.MustNewConstMetric(mCpuNice, prometheus.GaugeValue, hr.PerformanceStatus.CPU.Nice.Value, CpuUnit, fswitch, r.Vdom))
+		m = append(m, prometheus.MustNewConstMetric(mCpuSystem, prometheus.GaugeValue, hr.PerformanceStatus.CPU.System.Value, CpuUnit, fswitch, r.Vdom))
+		m = append(m, prometheus.MustNewConstMetric(mCpuIdle, prometheus.GaugeValue, hr.PerformanceStatus.CPU.Idle.Value, CpuUnit, fswitch, r.Vdom))
 	}
-	//}
+
 	return m, true
 }
