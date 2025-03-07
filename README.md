@@ -220,6 +220,7 @@ Per-Certificate:
   * `fortigate_certificate_valid_to_seconds`
   * `fortigate_certificate_cmdb_references`
 
+
 Per-VDOM and Wifi-Client:
 
 * _Wifi/Clients_
@@ -533,7 +534,6 @@ An example configuration for Prometheus looks something like this:
       - target_label: __address__
         replacement: '[::1]:9710'
 ```
-
 In above configuration only the targets and the replacement values needs to be changed as per your environment. Where target is URL of the Fortigate firewall and the replacement (at the bottom) will be the FQDN of system where the node exporter is running, example ```replacement: 'YourSystem.public.corp.com:9710'```
 
 If using [Dynamic configuration](#dynamic-configuration):
