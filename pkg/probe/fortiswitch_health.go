@@ -1,8 +1,8 @@
 package probe
 
 import (
-	"log"
 	"fmt"
+	"log"
 
 	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
@@ -142,7 +142,7 @@ func probeSwitchHealth(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Met
 		} else {
 			cpuGood = 0
 		}
-		m = append(m, prometheus.MustNewConstMetric(mSumCPU, prometheus.GaugeValue, cpuGood, fmt.Sprintf("%.0f",  hr.Summary.CPU.Value), hr.Summary.CPU.Rating, fswitch, r.Vdom))
+		m = append(m, prometheus.MustNewConstMetric(mSumCPU, prometheus.GaugeValue, cpuGood, fmt.Sprintf("%.0f", hr.Summary.CPU.Value), hr.Summary.CPU.Rating, fswitch, r.Vdom))
 
 		var memGood float64
 		if hr.Summary.Memory.Rating == "good" {
@@ -158,7 +158,7 @@ func probeSwitchHealth(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Met
 		} else {
 			uptimeGood = 0
 		}
-		m = append(m, prometheus.MustNewConstMetric(mSumUpTime, prometheus.GaugeValue,uptimeGood, fmt.Sprintf("%0.f", hr.Summary.Uptime.Value), hr.Summary.Uptime.Rating, fswitch, r.Vdom))
+		m = append(m, prometheus.MustNewConstMetric(mSumUpTime, prometheus.GaugeValue, uptimeGood, fmt.Sprintf("%0.f", hr.Summary.Uptime.Value), hr.Summary.Uptime.Rating, fswitch, r.Vdom))
 
 		var tempGood float64
 		if hr.Summary.Temperature.Rating == "good" {

@@ -15,7 +15,7 @@ func TestSwitchPortStats(t *testing.T) {
 	c.prepare("api/v2/monitor/switch-controller/managed-switch", "testdata/fsw-interface.jsonnet")
 
 	// ✅ New API (FortiOS 7.0.1+)
-	c.prepare("api/v2/monitor/switch-controller/managed-switch/status", "testdata/fsw-status7.jsonnet") // <-- Add this
+	c.prepare("api/v2/monitor/switch-controller/managed-switch/status", "testdata/fsw-status7.jsonnet")         // <-- Add this
 	c.prepare("api/v2/monitor/switch-controller/managed-switch/port-stats", "testdata/fsw-port-stats7.jsonnet") // <-- Add this
 
 	r := prometheus.NewPedanticRegistry()

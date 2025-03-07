@@ -1,10 +1,10 @@
 package probe
 
 import (
-	"log"
 	"fmt"
 	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+	"log"
 )
 
 func probeSwitchPortStats(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
@@ -139,20 +139,20 @@ func probeSwitchPortStats(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.
 		Vlan      string
 	}
 	type swResult struct {
-		Name           		string
-		Serial				string
-		FgPeerIntfName 		string `json:"fgt_peer_intf_name"`
-		Status         		string
-		State          		string
-		Connecting_from     string `json:"connecting_from"`
-		Vdom           		string
-		Ports          		[]portsInfo
-		PortStats      		map[string]portStats `json:"port_stats"`
+		Name            string
+		Serial          string
+		FgPeerIntfName  string `json:"fgt_peer_intf_name"`
+		Status          string
+		State           string
+		Connecting_from string `json:"connecting_from"`
+		Vdom            string
+		Ports           []portsInfo
+		PortStats       map[string]portStats `json:"port_stats"`
 	}
 
 	type swPortStats struct {
-		Serial string                 `json:"serial"`
-		Ports  map[string]portStats   `json:"ports"`
+		Serial string               `json:"serial"`
+		Ports  map[string]portStats `json:"ports"`
 	}
 
 	type swResponse struct {
