@@ -15,7 +15,7 @@ package probe
 
 import (
 	"fmt"
-	"github.com/bluecmd/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
 	"log"
 )
