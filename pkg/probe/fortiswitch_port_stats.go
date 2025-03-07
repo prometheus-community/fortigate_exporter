@@ -3,7 +3,6 @@ package probe
 import (
 	"log"
 	"fmt"
-
 	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -12,7 +11,9 @@ func probeSwitchPortStats(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.
 	var (
 		mSwitchStatus = prometheus.NewDesc(
 			"fortiswitch_status",
-			"Whether the switch is connected or not. \n # fgt_peer_intf_name = FortiLink interface that the FortiSwitch is connected to # \n connection_from = FortiSwitch port that is connected to the FortiLink interface",
+			`Whether the switch is connected or not
+# fgt_peer_intf_name = FortiLink interface that the FortiSwitch is connected to
+# connection_from = FortiSwitch port that is connected to the FortiLink interface`,
 			[]string{"vdom", "name", "serial_number", "fgt_peer_intf_name", "connection_from", "state"}, nil,
 		)
 		mPortStatus = prometheus.NewDesc(
@@ -234,14 +235,14 @@ func probeSwitchPortStats(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.
 
 		var swState float64
 		if swr.State == "Authorized" {
-			swState = 1
+			swState = 1.0
 		} else if swr.State == "DeAuthorized" {
-			swState = 0
+			swState = 0.0
 		} else if swr.State == "Discovered" {
-			swState = 2
+			swState = 2.0
 		}
 
-		m = append(m, prometheus.MustNewConstMetric(mSwitchStatus, prometheus.GaugeValue, swStatus, swr.Vdom, swr.Name, swr.Serial, swr.FgPeerIntfName, swr.Connecting_from, fmt.Sprintf("%f", swState)))
+		m = append(m, prometheus.MustNewConstMetric(mSwitchStatus, prometheus.GaugeValue, swStatus, swr.Vdom, swr.Name, swr.Serial, swr.FgPeerIntfName, swr.Connecting_from, fmt.Sprintf("%0.f", swState)))
 
 		for _, pi := range swr.Ports {
 			pStatus := 0.0

@@ -50,6 +50,8 @@ func (c *fakeClient) prepare(path string, jfile string) {
 		d: []byte(output),
 		q: u.Query(),
 	})
+		// Debug: Print prepared endpoints
+		log.Printf("Prepared URL: %s from file %s", u.Path, jfile)
 }
 
 func (c *fakeClient) Get(path string, query string, obj interface{}) error {
