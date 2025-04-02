@@ -114,9 +114,9 @@ func probeSwitchHealth(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Met
 		Temperature Sum
 	}
 	type Poe struct {
-		Value    int    `json:"value"`
-		MaxValue int    `json:"max_value"`
-		Unit     string `json:"unit"`
+		Value    float64 `json:"value"`
+		MaxValue float64 `json:"max_value"`
+		Unit     string  `json:"unit"`
 	}
 	type Results struct {
 		PerformanceStatus PerformanceStatus `json:"performance-status"`
