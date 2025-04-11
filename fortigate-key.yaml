@@ -1,7 +1,0 @@
-"https://10.193.42.178":
-  token: 0sjGn5zgy0s9HkfrNb75488x84rhgN
-  # If you have a smaller fortigate unit you might want
-  # to exclude sensors as they do not have any
-  probes:
-    exclude:
-      - System/SensorInfo
