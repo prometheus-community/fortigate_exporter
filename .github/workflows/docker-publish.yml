@@ -1,0 +1,51 @@
+name: Build and Publish Docker Image to GHCR
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Docker Buildx (for multi-platform support)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Log in to GHCR (GitHub Container Registry)
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Replace the placeholder with the actual token and build the Docker image
+      - name: Replace token and build Docker image
+        run: |
+          # Replace the placeholder in fortigate-key.yaml with the GitHub secret token
+          sed "s/FORTIGATE_API_TOKEN/${{ secrets.al_mp_id_s_general_fg_01_api_key }}/" fortigate-key.yaml.template > fortigate-key.yaml
+          # Build Docker image
+          docker build \
+            --build-arg FORTIGATE_KEY_FILE=fortigate-key.yaml \
+            -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+
+      # Push Docker image to GHCR
+      - name: Push Docker image to GHCR
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
