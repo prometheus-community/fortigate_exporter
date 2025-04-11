@@ -32,7 +32,7 @@ func TestSystemStatus(t *testing.T) {
 	em := `
 	# HELP fortigate_version_info System version and build information
 	# TYPE fortigate_version_info gauge
-	fortigate_version_info{build="1112",serial="FGVMEVZFNTS3OAC8",version="v6.2.4"} 1
+	fortigate_version_info{build="1112",hostname="Firewall1",model="FG800D",serial="FGVMEVZFNTS3OAC8",version="v6.2.4"} 1
 	`
 
 	if err := testutil.GatherAndCompare(r, strings.NewReader(em)); err != nil {
