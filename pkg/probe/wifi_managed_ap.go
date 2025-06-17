@@ -15,6 +15,11 @@ func probeWifiManagedAP(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Me
 			"Infos about a managed access point",
 			[]string{"vdom", "ap_name", "ap_profile", "os_version", "serial"}, nil,
 		)
+		managedAPStatus = prometheus.NewDesc(
+			"fortigate_wifi_managed_ap_status",
+			"Status of the managed access point",
+			[]string{"vdom", "ap_name", "status"}, nil,
+		)
 		managedApJoinTime = prometheus.NewDesc(
 			"fortigate_wifi_managed_ap_join_time_seconds",
 			"Unix time when the managed access point has joined the mesh",
@@ -204,6 +209,14 @@ func probeWifiManagedAP(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Me
 	for _, rs := range response {
 		for _, result := range rs.Results {
 			m = append(m, prometheus.MustNewConstMetric(managedAPInfo, prometheus.CounterValue, 1, result.VDOM, result.Name, result.APProfile, result.OSVersion, result.Serial))
+
+			// Add status metric with status as a label
+			status := "offline"
+			if result.JoinTimeRaw > 0 {
+				status = "online"
+			}
+			m = append(m, prometheus.MustNewConstMetric(managedAPStatus, prometheus.GaugeValue, 1, result.VDOM, result.Name, status))
+
 			m = append(m, prometheus.MustNewConstMetric(managedApJoinTime, prometheus.CounterValue, result.JoinTimeRaw, result.VDOM, result.Name))
 			m = append(m, prometheus.MustNewConstMetric(managedAPCPUUsage, prometheus.GaugeValue, result.CPUUsage/100, result.VDOM, result.Name))
 			m = append(m, prometheus.MustNewConstMetric(managedAPMemFree, prometheus.GaugeValue, result.MemFree, result.VDOM, result.Name))
