@@ -1,11 +1,17 @@
 # fortigate_exporter
 
-![Go](https://github.com/bluecmd/fortigate_exporter/workflows/Go/badge.svg)
-![Docker](https://github.com/bluecmd/fortigate_exporter/workflows/Docker/badge.svg)
-[![Docker Repository on Quay](https://quay.io/repository/bluecmd/fortigate_exporter/status "Docker Repository on Quay")](https://quay.io/repository/bluecmd/fortigate_exporter)
+![Go](https://github.com/prometheus-community/fortigate_exporter/workflows/Go/badge.svg)
+![Docker](https://github.com/prometheus-community/fortigate_exporter/workflows/Docker/badge.svg)
+[![Docker Repository on Quay](https://quay.io/repository/prometheuscommunity/fortigate_exporter/status "Docker Repository on Quay")](https://quay.io/repository/prometheuscommunity/fortigate_exporter)
 [![Matrix](https://img.shields.io/matrix/fortigate_exporter:matrix.org)](https://matrix.to/#/#fortigate_exporter:matrix.org)
 
 Prometheus exporter for FortiGate® firewalls.
+
+---
+
+**This repository is archived due to lack of time from the maintainer, as well as lack of support from Fortinet to provide documentation. The constant fight to reverse engineer the APIs for new versions takes too much time for a few developers. Feel free to fork this project and continue the work!**
+
+---
 
 **NOTE:** This is not an official Fortinet product, it is developed fully independently by professionals and hobbyists alike.
 
@@ -269,7 +275,7 @@ Example:
 ```
 $ ./fortigate_exporter -auth-file ~/fortigate-key.yaml
 # or
-$ docker run -d -p 9710:9710 -v /path/to/fortigate-key.yaml:/config/fortigate-key.yaml quay.io/bluecmd/fortigate_exporter:master
+$ docker run -d -p 9710:9710 -v /path/to/fortigate-key.yaml:/config/fortigate-key.yaml quay.io/prometheuscommunity/fortigate_exporter:master
 ```
 
 Where `fortigate-key.yaml` contains pairs of FortiGate targets and API keys in the following format:
@@ -486,7 +492,6 @@ An example configuration for Prometheus looks something like this:
       - target_label: __address__
         replacement: '[::1]:9710'
 ```
-In above configuration only the targets and the replacement values needs to be changed as per your environment. Where target is URL of the Fortigate firewall and the replacement (at the bottom) will be the FQDN of system where the node exporter is running, example ```replacement: 'YourSystem.public.corp.com:9710'```
 
 If using [Dynamic configuration](#dynamic-configuration):
 ```yaml
@@ -525,7 +530,7 @@ If using [Dynamic configuration](#dynamic-configuration):
 ### Docker
 
 You can either use the automatic builds on
-[quay.io](https://quay.io/repository/bluecmd/fortigate_exporter) or build yourself
+[quay.io](https://quay.io/repository/prometheuscommunity/fortigate_exporter) or build yourself
 like this:
 
 ```bash
@@ -552,11 +557,11 @@ prometheus_fortigate_exporter:
 This is a collection of known issues that for some reason cannot be fixed,
 but might be possible to work around.
 
- * Probing causing [httpsd memory leak in FortiOS 6.2.x](https://github.com/bluecmd/fortigate_exporter/issues/62) ([Workaround](https://github.com/bluecmd/fortigate_exporter/issues/62#issuecomment-798602061))
+ * Probing causing [httpsd memory leak in FortiOS 6.2.x](https://github.com/prometheus-community/fortigate_exporter/issues/62) ([Workaround](https://github.com/prometheus-community/fortigate_exporter/issues/62#issuecomment-798602061))
 
 ## Missing Metrics?
 
-Please [file an issue](https://github.com/bluecmd/fortigate_exporter/issues/new) describing what metrics you'd like to see.
+Please [file an issue](https://github.com/prometheus-community/fortigate_exporter/issues/new) describing what metrics you'd like to see.
 Include as much details as possible please, e.g. how the perfect Prometheus metric would look for your use-case.
 
 An alternative to using this exporter is to use generic SNMP polling, e.g. using a Prometheus SNMP exporter
