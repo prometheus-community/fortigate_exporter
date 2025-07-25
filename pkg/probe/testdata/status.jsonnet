@@ -2,6 +2,11 @@
 {
   "http_method":"GET",
   "results":{
+    "model_name":"FortiGate",
+    "model_number":"800D",
+    "model":"FG800D",
+    "hostname":"Firewall1",
+    "log_disk_status":"not_available"
   },
   "vdom":"root",
   "path":"system",
