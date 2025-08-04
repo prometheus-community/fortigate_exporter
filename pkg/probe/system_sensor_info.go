@@ -15,15 +15,27 @@ package probe
 
 import (
 	"log"
+	"reflect"
 
 	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+type SystemSensorInfoResultsThresholds struct {
+	LowerNonRec  float64 `json:"lower_non_recoverable,omitempty"`
+	LowerCrit    float64 `json:"lower_critical,omitempty"`
+	LowerNonCrit float64 `json:"lower_non_critical,omitempty"`
+	UpperNonCrit float64 `json:"upper_non_critical,omitempty"`
+	UpperCrit    float64 `json:"upper_critical,omitempty"`
+	UpperNonRec  float64 `json:"upper_non_recoverable,omitempty"`
+}
+
 type SystemSensorInfoResults struct {
-	Name  string  `json:"name"`
-	Type  string  `json:"type"`
-	Value float64 `json:"value"`
+	Name       string                            `json:"name"`
+	Type       string                            `json:"type"`
+	Value      float64                           `json:"value"`
+	Alarm      bool                              `json:"alarm"`
+	Thresholds SystemSensorInfoResultsThresholds `json:"thresholds"`
 }
 
 type SystemSensorInfo struct {
@@ -47,6 +59,16 @@ func probeSystemSensorInfo(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 			"Sensor voltage in volts",
 			[]string{"name"}, nil,
 		)
+		sensorAlarm = prometheus.NewDesc(
+			"fortigate_sensor_alarm_status",
+			"Sensor alarm status",
+			[]string{"name"}, nil,
+		)
+		sensorThresholds = prometheus.NewDesc(
+			"fortigate_sensor_thresholds",
+			"Sensor threasholds",
+			[]string{"name", "threshold"}, nil,
+		)
 	)
 
 	var res SystemSensorInfo
@@ -57,6 +79,21 @@ func probeSystemSensorInfo(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 
 	m := []prometheus.Metric{}
 	for _, r := range res.Results {
+		switch meta.VersionMajor {
+		case 7:
+			alarm := 0.0
+			if r.Alarm {
+				alarm = 1.0
+			}
+			m = append(m, prometheus.MustNewConstMetric(sensorAlarm, prometheus.GaugeValue, alarm, r.Name))
+			v := reflect.ValueOf(r.Thresholds)
+
+			for i := range v.NumField() {
+				if v.Field(i).Float() != 0 {
+					m = append(m, prometheus.MustNewConstMetric(sensorThresholds, prometheus.GaugeValue, v.Field(i).Float(), r.Name, v.Type().Field(i).Name))
+				}
+			}
+		}
 		switch r.Type {
 		case "temperature":
 			m = append(m, prometheus.MustNewConstMetric(sensorTemperature, prometheus.GaugeValue, r.Value, r.Name))

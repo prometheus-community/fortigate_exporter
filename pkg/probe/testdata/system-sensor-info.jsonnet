@@ -152,11 +152,7 @@
       "type":"temperature",
       "value":42.000000,
       "alarm":false,
-      "thresholds":{
-        "upper_non_critical":95.000000,
-        "upper_critical":100.000000,
-        "upper_non_recoverable":105.000000
-      }
+      "thresholds":{}
     },
     {
       "id":"temperature.cpu_0_core_3",
@@ -847,7 +843,7 @@
       "name":"PS2 Status",
       "type":"power",
       "value":0.000000,
-      "alarm":false,
+      "alarm":true,
       "thresholds":{
         "upper_non_critical":0.000000,
         "upper_critical":0.000000,
