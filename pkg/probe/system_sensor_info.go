@@ -21,27 +21,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type SystemSensorInfoResultsThresholds struct {
-	LowerNonRec  float64 `json:"lower_non_recoverable,omitempty"`
-	LowerCrit    float64 `json:"lower_critical,omitempty"`
-	LowerNonCrit float64 `json:"lower_non_critical,omitempty"`
-	UpperNonCrit float64 `json:"upper_non_critical,omitempty"`
-	UpperCrit    float64 `json:"upper_critical,omitempty"`
-	UpperNonRec  float64 `json:"upper_non_recoverable,omitempty"`
-}
-
-type SystemSensorInfoResults struct {
-	Name       string                            `json:"name"`
-	Type       string                            `json:"type"`
-	Value      float64                           `json:"value"`
-	Alarm      bool                              `json:"alarm"`
-	Thresholds SystemSensorInfoResultsThresholds `json:"thresholds"`
-}
-
-type SystemSensorInfo struct {
-	Results []SystemSensorInfoResults `json:"results"`
-}
-
 func probeSystemSensorInfo(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		sensorTemperature = prometheus.NewDesc(
@@ -70,6 +49,27 @@ func probeSystemSensorInfo(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 			[]string{"name", "threshold"}, nil,
 		)
 	)
+
+	type SystemSensorInfoResultsThresholds struct {
+		LowerNonRec  float64 `json:"lower_non_recoverable,omitempty"`
+		LowerCrit    float64 `json:"lower_critical,omitempty"`
+		LowerNonCrit float64 `json:"lower_non_critical,omitempty"`
+		UpperNonCrit float64 `json:"upper_non_critical,omitempty"`
+		UpperCrit    float64 `json:"upper_critical,omitempty"`
+		UpperNonRec  float64 `json:"upper_non_recoverable,omitempty"`
+	}
+
+	type SystemSensorInfoResults struct {
+		Name       string                            `json:"name"`
+		Type       string                            `json:"type"`
+		Value      float64                           `json:"value"`
+		Alarm      bool                              `json:"alarm"`
+		Thresholds SystemSensorInfoResultsThresholds `json:"thresholds"`
+	}
+
+	type SystemSensorInfo struct {
+		Results []SystemSensorInfoResults `json:"results"`
+	}
 
 	var res SystemSensorInfo
 	if err := c.Get("api/v2/monitor/system/sensor-info", "vdom=root", &res); err != nil {
