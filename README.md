@@ -38,9 +38,11 @@ Supported metrics right now as follows.
 Global:
 
  * _System/SensorInfo_
+   * `fortigate_sensor_alarm_status`
    * `fortigate_sensor_fan_rpm`
    * `fortigate_sensor_temperature_celsius`
    * `fortigate_sensor_voltage_volts`
+   * `fortigate_sensor_thresholds`
  * _System/Status_
    * `fortigate_version_info`
  * _System/Time/Clock_
