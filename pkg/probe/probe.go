@@ -153,6 +153,7 @@ func (p *ProbeCollector) Probe(ctx context.Context, target map[string]string, hc
 		{"System/HAChecksum", probeSystemHAChecksum},
 		{"System/Sandbox/Connection", probeSystemSandboxConnection},
 		{"System/Sandbox/Status", probeSystemSandboxStatus},
+		{"System/Sandbox/Stats", probeSystemSandboxStats},
 		{"User/Fsso", probeUserFsso},
 		{"VPN/IPSec", probeVPNIPSec},
 		{"VPN/Ssl/Connections", probeVPNSsl},
