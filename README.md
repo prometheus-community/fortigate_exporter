@@ -92,6 +92,10 @@ Per-VDOM:
  * _System/SDNConnector_
    * `fortigate_system_sdn_connector_status`
    * `fortigate_system_sdn_connector_last_update_seconds`
+ * _/System/CentralManagement/Status_
+   * `fortigate_system_central_management_mode`
+   * `fortigate_system_central_management_status`
+   * `fortigate_system_central_management_registration_status`
  * _User/Fsso_
    * `fortigate_user_fsso_info`
  * _VPN/Ssl/Connections_
@@ -399,37 +403,39 @@ To improve security, limit permissions to required ones only (least privilege pr
 
 | probe name | permission | API URL |
 |---|---|---|
-| *Default Global*            | *any*              |api/v2/monitor/system/status |
-|BGP/NeighborPaths/IPv4       | netgrp.route-cfg   |api/v2/monitor/router/bgp/paths |
-|BGP/NeighborPaths/IPv6       | netgrp.route-cfg   |api/v2/monitor/router/bgp/paths6 |
-|BGP/Neighbors/IPv4           | netgrp.route-cfg   |api/v2/monitor/router/bgp/neighbors |
-|BGP/Neighbors/IPv6           | netgrp.route-cfg   |api/v2/monitor/router/bgp/neighbors6 |
-|Firewall/IpPool              | fwgrp.policy       |api/v2/monitor/firewall/ippool |
-|Firewall/LoadBalance         | fwgrp.others       |api/v2/monitor/firewall/load-balance |
-|Firewall/Policies            | fwgrp.policy       |api/v2/monitor/firewall/policy/select<br>api/v2/monitor/firewall/policy6/select<br>api/v2/cmdb/firewall/policy<br>api/v2/cmdb/firewall/policy6 |
-|License/Status               | *any*              |api/v2/monitor/license/status/select |
-|Log/Fortianalyzer/Status     | loggrp.config      |api/v2/monitor/log/fortianalyzer |
-|Log/Fortianalyzer/Queue      | loggrp.config      |api/v2/monitor/log/fortianalyzer-queue |
-|Log/DiskUsage                | loggrp.config      |api/v2/monitor/log/current-disk-usage |
-|System/AvailableCertificates | *any*              |api/v2/monitor/system/available-certificates |
-|System/Fortimanager/Status   | sysgrp.cfg         |api/v2/monitor/system/fortimanager/status |
-|System/HAStatistics          | sysgrp.cfg         |api/v2/monitor/system/ha-statistics<br>api/v2/cmdb/system/ha |
-|System/Interface             | netgrp.cfg         |api/v2/monitor/system/interface/select |
-|System/LinkMonitor           | sysgrp.cfg         |api/v2/monitor/system/link-monitor |
-|System/Resource/Usage        | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
-|System/SensorInfo            | sysgrp.cfg         |api/v2/monitor/system/sensor-info |
-|System/Status                | *any*              |api/v2/monitor/system/status |
-|System/Time/Clock            | sysgrp.cfg         |api/v2/monitor/system/time |
-|System/VDOMResources         | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
-|User/Fsso                    | authgrp            |api/v2/monitor/user/fsso |
-|VPN/IPSec                    | vpngrp             |api/v2/monitor/vpn/ipsec |
-|VPN/Ssl/Connections          | vpngrp             |api/v2/monitor/vpn/ssl |
-|VPN/Ssl/Stats                | vpngrp             |api/v2/monitor/vpn/ssl/stats |
-|VirtualWAN/HealthCheck       | netgrp.cfg         |api/v2/monitor/virtual-wan/health-check |
-|Wifi/APStatus                | wifi               |api/v2/monitor/wifi/ap_status |
-|Wifi/Clients                 | wifi               |api/v2/monitor/wifi/client |
-|Wifi/ManagedAP               | wifi               |api/v2/monitor/wifi/managed_ap |
-|Switch/ManagedSwitch         | switch	           |api/v2/monitor/switch-controller/managed-switch|
+| *Default Global*                | *any*              |api/v2/monitor/system/status |
+|BGP/NeighborPaths/IPv4           | netgrp.route-cfg   |api/v2/monitor/router/bgp/paths |
+|BGP/NeighborPaths/IPv6           | netgrp.route-cfg   |api/v2/monitor/router/bgp/paths6 |
+|BGP/Neighbors/IPv4               | netgrp.route-cfg   |api/v2/monitor/router/bgp/neighbors |
+|BGP/Neighbors/IPv6               | netgrp.route-cfg   |api/v2/monitor/router/bgp/neighbors6 |
+|Firewall/IpPool                  | fwgrp.policy       |api/v2/monitor/firewall/ippool |
+|Firewall/LoadBalance             | fwgrp.others       |api/v2/monitor/firewall/load-balance |
+|Firewall/Policies                | fwgrp.policy       |api/v2/monitor/firewall/policy/select<br>api/v2/monitor/firewall/policy6/select<br>api/v2/cmdb/firewall/policy<br>api/v2/cmdb/firewall/policy6 |
+|License/Status                   | *any*              |api/v2/monitor/license/status/select |
+|Log/Fortianalyzer/Status         | loggrp.config      |api/v2/monitor/log/fortianalyzer |
+|Log/Fortianalyzer/Queue          | loggrp.config      |api/v2/monitor/log/fortianalyzer-queue |
+|Log/DiskUsage                    | loggrp.config      |api/v2/monitor/log/current-disk-usage |
+|System/AvailableCertificates     | *any*              |api/v2/monitor/system/available-certificates |
+|System/Central-management/Status | sysgrp.cfg         |api/v2/monitor/system/central-management/status|
+|System/Fortimanager/Status       | sysgrp.cfg         |api/v2/monitor/system/fortimanager/status |
+|System/HAStatistics              | sysgrp.cfg         |api/v2/monitor/system/ha-statistics<br>api/v2/cmdb/system/ha |
+|System/Interface                 | netgrp.cfg         |api/v2/monitor/system/interface/select |
+|System/LinkMonitor               | sysgrp.cfg         |api/v2/monitor/system/link-monitor |
+|System/Performance/Status        | sysgrp.cfg         |api/v2/monitor/system/performance/status |
+|System/Resource/Usage            | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
+|System/SensorInfo                | sysgrp.cfg         |api/v2/monitor/system/sensor-info |
+|System/Status                    | *any*              |api/v2/monitor/system/status |
+|System/Time/Clock                | sysgrp.cfg         |api/v2/monitor/system/time |
+|System/VDOMResources             | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
+|User/Fsso                        | authgrp            |api/v2/monitor/user/fsso |
+|VPN/IPSec                        | vpngrp             |api/v2/monitor/vpn/ipsec |
+|VPN/Ssl/Connections              | vpngrp             |api/v2/monitor/vpn/ssl |
+|VPN/Ssl/Stats                    | vpngrp             |api/v2/monitor/vpn/ssl/stats |
+|VirtualWAN/HealthCheck           | netgrp.cfg         |api/v2/monitor/virtual-wan/health-check |
+|Wifi/APStatus                    | wifi               |api/v2/monitor/wifi/ap_status |
+|Wifi/Clients                     | wifi               |api/v2/monitor/wifi/client |
+|Wifi/ManagedAP                   | wifi               |api/v2/monitor/wifi/managed_ap |
+|Switch/ManagedSwitch             | switch	           |api/v2/monitor/switch-controller/managed-switch|
 If you omit to grant some of these permissions you will receive log messages warning about
 403 errors and relevant metrics will be unavailable, but other metrics will still work.
 If you do not need some probes to be run, do not grant permission for them and use `include/exclude` feature (see `Usage` section).
