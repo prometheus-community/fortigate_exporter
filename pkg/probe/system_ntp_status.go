@@ -26,37 +26,37 @@ func probeSystemNtpStatus(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.
 		ntpExpires = prometheus.NewDesc(
 			"fortigate_system_ntp_expires",
 			"NTP expire time, in seconds",
-			[]string{"ip", "server", "reachable", "selected", "version"}, nil,
+			[]string{"ip", "server", "reachable", "selected", "version", "vdom"}, nil,
 		)
 		ntpStratum = prometheus.NewDesc(
 			"fortigate_system_ntp_stratum",
 			"NTP stratum value",
-			[]string{"ip", "server", "reachable", "selected", "version"}, nil,
+			[]string{"ip", "server", "reachable", "selected", "version", "vdom"}, nil,
 		)
 		ntpRefTime = prometheus.NewDesc(
 			"fortigate_system_ntp_reftime",
 			"NTP reftime in epoch seconds",
-			[]string{"ip", "server", "reachable", "selected", "version"}, nil,
+			[]string{"ip", "server", "reachable", "selected", "version", "vdom"}, nil,
 		)
 		ntpOffset = prometheus.NewDesc(
 			"fortigate_system_ntp_offset",
 			"NTP combined offset, in milliseconds",
-			[]string{"ip", "server", "reachable", "selected", "version"}, nil,
+			[]string{"ip", "server", "reachable", "selected", "version", "vdom"}, nil,
 		)
 		ntpDelay = prometheus.NewDesc(
 			"fortigate_system_ntp_delay",
 			"NTP round trip delay, in milliseconds",
-			[]string{"ip", "server", "reachable", "selected", "version"}, nil,
+			[]string{"ip", "server", "reachable", "selected", "version", "vdom"}, nil,
 		)
 		ntpDispersion = prometheus.NewDesc(
 			"fortigate_system_ntp_dispersion",
 			"NTP dispersion to primary clock, in milliseconds",
-			[]string{"ip", "server", "reachable", "selected", "version"}, nil,
+			[]string{"ip", "server", "reachable", "selected", "version", "vdom"}, nil,
 		)
 		ntpPeerDispersion = prometheus.NewDesc(
 			"fortigate_system_ntp_dispersion_peer",
 			"NTP peer dispersion, in milliseconds",
-			[]string{"ip", "server", "reachable", "selected", "version"}, nil,
+			[]string{"ip", "server", "reachable", "selected", "version", "vdom"}, nil,
 		)
 	)
 
@@ -77,23 +77,30 @@ func probeSystemNtpStatus(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.
 
 	type SystemNtpStatusResult struct {
 		Results []SystemNtpStatus `json:"results"`
+		VDOM    string            `json:"vdom"`
 	}
 
-	var res SystemNtpStatusResult
-	if err := c.Get("api/v2/monitor/system/ntp/status","",&res); err != nil {
+	var result []SystemNtpStatusResult
+	if err := c.Get("api/v2/monitor/system/ntp/status","",&result); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false
 	}
 
 	m := []prometheus.Metric{}
-	for _, r := range res.Results {
-		m = append(m, prometheus.MustNewConstMetric(ntpExpires, prometheus.GaugeValue, float64(r.Expires), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version)))
-		m = append(m, prometheus.MustNewConstMetric(ntpStratum, prometheus.GaugeValue, float64(r.Stratum), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version)))
-		m = append(m, prometheus.MustNewConstMetric(ntpRefTime, prometheus.CounterValue, float64(r.Reftime), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version)))
-		m = append(m, prometheus.MustNewConstMetric(ntpOffset, prometheus.GaugeValue, float64(r.Offset), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version)))
-		m = append(m, prometheus.MustNewConstMetric(ntpDelay, prometheus.GaugeValue, float64(r.Delay), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version)))
-		m = append(m, prometheus.MustNewConstMetric(ntpDispersion, prometheus.GaugeValue, float64(r.Dispersion), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version)))
-		m = append(m, prometheus.MustNewConstMetric(ntpPeerDispersion, prometheus.GaugeValue, float64(r.PeerDispersion), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version)))
+	if meta.VersionMajor >=7 && meta.VersionMinor >=4 {
+		for _, res := range result {
+			for _, r := range res.Results {
+					m = append(m, prometheus.MustNewConstMetric(ntpExpires, prometheus.GaugeValue, float64(r.Expires), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+					m = append(m, prometheus.MustNewConstMetric(ntpStratum, prometheus.GaugeValue, float64(r.Stratum), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+					m = append(m, prometheus.MustNewConstMetric(ntpRefTime, prometheus.CounterValue, float64(r.Reftime), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+					m = append(m, prometheus.MustNewConstMetric(ntpOffset, prometheus.GaugeValue, float64(r.Offset), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+					m = append(m, prometheus.MustNewConstMetric(ntpDelay, prometheus.GaugeValue, float64(r.Delay), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+					m = append(m, prometheus.MustNewConstMetric(ntpDispersion, prometheus.GaugeValue, float64(r.Dispersion), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+					m = append(m, prometheus.MustNewConstMetric(ntpPeerDispersion, prometheus.GaugeValue, float64(r.PeerDispersion), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+			}
+		}
+	} else {
+		log.Printf("Not implemented in versions under 7.4")
 	}
 	return m, true
 }
