@@ -37,6 +37,9 @@ Supported metrics right now as follows.
 
 Global:
 
+ * _Network/Dns/Latency_
+   * `fortigate_network_dns_latency`
+   * `fortigate_network_dns_latest_update`
  * _System/SensorInfo_
    * `fortigate_sensor_fan_rpm`
    * `fortigate_sensor_temperature_celsius`
@@ -411,6 +414,7 @@ To improve security, limit permissions to required ones only (least privilege pr
 |Log/Fortianalyzer/Status     | loggrp.config      |api/v2/monitor/log/fortianalyzer |
 |Log/Fortianalyzer/Queue      | loggrp.config      |api/v2/monitor/log/fortianalyzer-queue |
 |Log/DiskUsage                | loggrp.config      |api/v2/monitor/log/current-disk-usage |
+|Network/Dns/Latency          | sysgrp.cfg         |api/v2/monitor/network/dns/latency |
 |System/AvailableCertificates | *any*              |api/v2/monitor/system/available-certificates |
 |System/Fortimanager/Status   | sysgrp.cfg         |api/v2/monitor/system/fortimanager/status |
 |System/HAStatistics          | sysgrp.cfg         |api/v2/monitor/system/ha-statistics<br>api/v2/cmdb/system/ha |
