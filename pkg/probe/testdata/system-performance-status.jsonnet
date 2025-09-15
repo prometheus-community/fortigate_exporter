@@ -1,5 +1,5 @@
 # api/v2/monitor/system/performance/status
-{
+[{
   "http_method":"GET",
   "results": [
     {
@@ -73,4 +73,4 @@
   "serial":"FGT61FT000000000",
   "version":"v6.0.10",
   "build":365
-}
+}]
