@@ -81,7 +81,7 @@ func probeSystemNtpStatus(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.
 	}
 
 	var result []SystemNtpStatusResult
-	if err := c.Get("api/v2/monitor/system/ntp/status","",&result); err != nil {
+	if err := c.Get("api/v2/monitor/system/ntp/status","vdom=*",&result); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false
 	}
