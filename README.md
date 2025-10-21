@@ -57,6 +57,15 @@ Global:
  * _WebUI/State_
    * `fortigate_last_reboot_seconds`
    * `fortigate_last_snapshot_seconds`
+ * _System/Sandbox_
+   * `fortigate_sandbox_status_signature_count`
+   * `fortigate_sandbox_connection_status`
+   * `fortigate_sandbox_stats_clean`
+   * `fortigate_sandbox_stats_detected`
+   * `fortigate_sandbox_stats_risk_high`
+   * `fortigate_sandbox_stats_risk_medium`
+   * `fortigate_sandbox_stats_risk_low`
+   * `fortigate_sandbox_stats_submitted`
 
 Per-VDOM:
 
@@ -419,6 +428,9 @@ To improve security, limit permissions to required ones only (least privilege pr
 |System/Resource/Usage        | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
 |System/SensorInfo            | sysgrp.cfg         |api/v2/monitor/system/sensor-info |
 |System/Status                | *any*              |api/v2/monitor/system/status |
+|System/Sandbox/Connection    | sysgrp.cfg         |api/v2/monitor/system/sandbox/connection|
+|System/Sandbox/Status        | sysgrp.cfg         |api/v2/monitor/system/sandbox/status|
+|System/Sandbox/Stats         | sysgrp.cfg         |api/v2/monitor/system/sandbox/stats|
 |System/Time/Clock            | sysgrp.cfg         |api/v2/monitor/system/time |
 |System/VDOMResources         | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
 |User/Fsso                    | authgrp            |api/v2/monitor/user/fsso |
