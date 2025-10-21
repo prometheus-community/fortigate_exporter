@@ -56,15 +56,16 @@ func probeSystemSDNConnector(c http.FortiHTTP, meta *TargetMetadata) ([]promethe
 	m := []prometheus.Metric{}
 	for _, r := range res {
 		for _, sdnConn := range r.Results {
-			if sdnConn.Status == "Disabled" {
+			switch sdnConn.Status {
+			case "Disabled":
 				m = append(m, prometheus.MustNewConstMetric(SDNConnectorsStatus, prometheus.GaugeValue, float64(0), r.VDOM, sdnConn.Name, sdnConn.Type))
-			} else if sdnConn.Status == "Down" {
+			case "Down":
 				m = append(m, prometheus.MustNewConstMetric(SDNConnectorsStatus, prometheus.GaugeValue, float64(1), r.VDOM, sdnConn.Name, sdnConn.Type))
-			} else if sdnConn.Status == "Unknown" {
+			case "Unknown":
 				m = append(m, prometheus.MustNewConstMetric(SDNConnectorsStatus, prometheus.GaugeValue, float64(2), r.VDOM, sdnConn.Name, sdnConn.Type))
-			} else if sdnConn.Status == "Up" {
+			case "Up":
 				m = append(m, prometheus.MustNewConstMetric(SDNConnectorsStatus, prometheus.GaugeValue, float64(3), r.VDOM, sdnConn.Name, sdnConn.Type))
-			} else if sdnConn.Status == "Updating" {
+			case "Updating":
 				m = append(m, prometheus.MustNewConstMetric(SDNConnectorsStatus, prometheus.GaugeValue, float64(4), r.VDOM, sdnConn.Name, sdnConn.Type))
 			}
 			m = append(m, prometheus.MustNewConstMetric(SDNConnectorsLastUpdate, prometheus.GaugeValue, float64(sdnConn.LastUpdate), r.VDOM, sdnConn.Name, sdnConn.Type))

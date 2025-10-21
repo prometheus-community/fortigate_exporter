@@ -77,7 +77,7 @@ func (c *fortiTokenClient) Get(path string, query string, obj interface{}) error
 		return err
 	}
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("Response code was %d, expected 200 (path: %q)", resp.StatusCode, path)
+		return fmt.Errorf("response code was %d, expected 200 (path: %q)", resp.StatusCode, path)
 	}
 
 	b, err := io.ReadAll(resp.Body)
