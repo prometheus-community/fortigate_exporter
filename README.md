@@ -43,6 +43,8 @@ Global:
    * `fortigate_sensor_voltage_volts`
  * _System/Status_
    * `fortigate_version_info`
+ * _System/Transceivers_
+   * `fortigate_interface_transceivers`
  * _System/Time/Clock_
    * `fortigate_time_seconds`
  * _System/Resource/Usage_
@@ -89,6 +91,8 @@ Per-VDOM:
    * `fortigate_interface_receive_bytes_total`
    * `fortigate_interface_transmit_errors_total`
    * `fortigate_interface_receive_errors_total`
+ * _System/Interface/Transceivers_
+   * `fortigate_inteface_transceivers`
  * _System/SDNConnector_
    * `fortigate_system_sdn_connector_status`
    * `fortigate_system_sdn_connector_last_update_seconds`
@@ -415,6 +419,7 @@ To improve security, limit permissions to required ones only (least privilege pr
 |System/Fortimanager/Status   | sysgrp.cfg         |api/v2/monitor/system/fortimanager/status |
 |System/HAStatistics          | sysgrp.cfg         |api/v2/monitor/system/ha-statistics<br>api/v2/cmdb/system/ha |
 |System/Interface             | netgrp.cfg         |api/v2/monitor/system/interface/select |
+|System/Interface/Transceivers| *any*              |api/v2/monitor/system/interface/transceivers |
 |System/LinkMonitor           | sysgrp.cfg         |api/v2/monitor/system/link-monitor |
 |System/Resource/Usage        | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
 |System/SensorInfo            | sysgrp.cfg         |api/v2/monitor/system/sensor-info |
