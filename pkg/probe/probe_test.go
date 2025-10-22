@@ -63,6 +63,7 @@ func (c *fakeClient) prepare(path string, jfile string) {
 		d: []byte(output),
 		q: u.Query(),
 	})
+
 }
 
 func (c *fakeClient) Get(path string, query string, obj interface{}) error {
