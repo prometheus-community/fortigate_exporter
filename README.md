@@ -60,7 +60,7 @@ Global:
 
 Per-VDOM:
 
- * _System/VDOMResources_
+ * _System/Resource/Usage/VDOM_
    * `fortigate_vdom_cpu_usage_ratio`
    * `fortigate_vdom_memory_usage_ratio`
    * `fortigate_vdom_current_sessions`
@@ -92,6 +92,21 @@ Per-VDOM:
  * _System/SDNConnector_
    * `fortigate_system_sdn_connector_status`
    * `fortigate_system_sdn_connector_last_update_seconds`
+ * _System/VDOMResource_
+   * `fortigate_vdom_resource_cpu_usage`
+   * `fortigate_vdom_resource_memory_usage`
+   * `fortigate_vdom_resource_setup_rate`
+   * `fortigate_vdom_resource_deletable`
+   * `fortigate_vdom_resource_object_id`
+   * `fortigate_vdom_resource_object_custom_max`
+   * `fortigate_vdom_resource_object_custom_min_value`
+   * `fortigate_vdom_resource_object_custom_max_value`
+   * `fortigate_vdom_resource_object_guaranted`
+   * `fortigate_vdom_resource_object_guaranted_max_value`
+   * `fortigate_vdom_resource_object_guaranted_min_value`
+   * `fortigate_vdom_resource_object_global_max`
+   * `fortigate_vdom_resource_object_current_usage`
+   * `fortigate_vdom_resource_object_usage_percentage`
  * _User/Fsso_
    * `fortigate_user_fsso_info`
  * _VPN/Ssl/Connections_
@@ -417,10 +432,11 @@ To improve security, limit permissions to required ones only (least privilege pr
 |System/Interface             | netgrp.cfg         |api/v2/monitor/system/interface/select |
 |System/LinkMonitor           | sysgrp.cfg         |api/v2/monitor/system/link-monitor |
 |System/Resource/Usage        | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
+|System/Resource/Usage/VDOM   | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
 |System/SensorInfo            | sysgrp.cfg         |api/v2/monitor/system/sensor-info |
 |System/Status                | *any*              |api/v2/monitor/system/status |
 |System/Time/Clock            | sysgrp.cfg         |api/v2/monitor/system/time |
-|System/VDOMResources         | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
+|System/System/VDOMResource   | sysgrp.cfg         |api/v2/monitor/system/vdom-resource |
 |User/Fsso                    | authgrp            |api/v2/monitor/user/fsso |
 |VPN/IPSec                    | vpngrp             |api/v2/monitor/vpn/ipsec |
 |VPN/Ssl/Connections          | vpngrp             |api/v2/monitor/vpn/ssl |

@@ -49,8 +49,8 @@ func TestSystemVDOMResources(t *testing.T) {
 	c := newFakeClient()
 	c.prepare("api/v2/monitor/system/resource/usage", "testdata/usage-vdom.jsonnet")
 	r := prometheus.NewPedanticRegistry()
-	if !testProbe(probeSystemVDOMResources, c, r) {
-		t.Errorf("probeSystemVDOMResources() returned non-success")
+	if !testProbe(probeSystemResourceUsagePerVdom, c, r) {
+		t.Errorf("probeSystemResourceUsagePerVdom() returned non-success")
 	}
 
 	em := `
