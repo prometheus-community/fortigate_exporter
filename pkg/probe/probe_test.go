@@ -107,7 +107,7 @@ func (p *testProbeCollector) Describe(c chan<- *prometheus.Desc) {
 func testProbe(pf probeFunc, c http.FortiHTTP, r Registry) bool {
 	meta := &TargetMetadata{
 		VersionMajor: 7,
-		VersionMinor: 0,
+		VersionMinor: 4,
 	}
 	return testProbeWithMetadata(pf, c, meta, r)
 }
