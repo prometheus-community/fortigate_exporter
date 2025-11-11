@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,8 +16,9 @@ package probe
 import (
 	"log"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type HAChecksumResults struct {
@@ -30,13 +31,11 @@ type HAChecksum struct {
 	Results []HAChecksumResults `json:"results"`
 }
 
-func probeSystemHAChecksum(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
-	var (
-		IsMaster = prometheus.NewDesc(
-			"fortigate_ha_member_has_role",
-			"Master/Slave information",
-			[]string{"role", "serial"}, nil,
-		)
+func probeSystemHAChecksum(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+	IsMaster := prometheus.NewDesc(
+		"fortigate_ha_member_has_role",
+		"Master/Slave information",
+		[]string{"role", "serial"}, nil,
 	)
 
 	var res HAChecksum

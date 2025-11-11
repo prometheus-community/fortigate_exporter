@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -17,8 +17,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 func probeSystemNtpStatus(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
@@ -61,7 +62,7 @@ func probeSystemNtpStatus(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.
 	)
 
 	type SystemNtpStatus struct {
-		Ip             string  `json:"ip"`
+		IP             string  `json:"ip"`
 		Server         string  `json:"server"`
 		Reachable      bool    `json:"reachable"`
 		Expires        int     `json:"expires"`
@@ -81,22 +82,22 @@ func probeSystemNtpStatus(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.
 	}
 
 	var result []SystemNtpStatusResult
-	if err := c.Get("api/v2/monitor/system/ntp/status","vdom=*",&result); err != nil {
+	if err := c.Get("api/v2/monitor/system/ntp/status", "vdom=*", &result); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false
 	}
 
 	m := []prometheus.Metric{}
-	if meta.VersionMajor >=7 && meta.VersionMinor >=4 {
+	if meta.VersionMajor >= 7 && meta.VersionMinor >= 4 {
 		for _, res := range result {
 			for _, r := range res.Results {
-					m = append(m, prometheus.MustNewConstMetric(ntpExpires, prometheus.GaugeValue, float64(r.Expires), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
-					m = append(m, prometheus.MustNewConstMetric(ntpStratum, prometheus.GaugeValue, float64(r.Stratum), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
-					m = append(m, prometheus.MustNewConstMetric(ntpRefTime, prometheus.CounterValue, float64(r.Reftime), r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
-					m = append(m, prometheus.MustNewConstMetric(ntpOffset, prometheus.GaugeValue, float64(r.Offset) * 0.001, r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
-					m = append(m, prometheus.MustNewConstMetric(ntpDelay, prometheus.GaugeValue, float64(r.Delay) * 0.001, r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
-					m = append(m, prometheus.MustNewConstMetric(ntpDispersion, prometheus.GaugeValue, float64(r.Dispersion) * 0.001, r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
-					m = append(m, prometheus.MustNewConstMetric(ntpPeerDispersion, prometheus.GaugeValue, float64(r.PeerDispersion) * 0.001, r.Ip, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+				m = append(m, prometheus.MustNewConstMetric(ntpExpires, prometheus.GaugeValue, float64(r.Expires), r.IP, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+				m = append(m, prometheus.MustNewConstMetric(ntpStratum, prometheus.GaugeValue, float64(r.Stratum), r.IP, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+				m = append(m, prometheus.MustNewConstMetric(ntpRefTime, prometheus.CounterValue, float64(r.Reftime), r.IP, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+				m = append(m, prometheus.MustNewConstMetric(ntpOffset, prometheus.GaugeValue, float64(r.Offset)*0.001, r.IP, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+				m = append(m, prometheus.MustNewConstMetric(ntpDelay, prometheus.GaugeValue, float64(r.Delay)*0.001, r.IP, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+				m = append(m, prometheus.MustNewConstMetric(ntpDispersion, prometheus.GaugeValue, float64(r.Dispersion)*0.001, r.IP, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
+				m = append(m, prometheus.MustNewConstMetric(ntpPeerDispersion, prometheus.GaugeValue, float64(r.PeerDispersion)*0.001, r.IP, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))
 			}
 		}
 	} else {

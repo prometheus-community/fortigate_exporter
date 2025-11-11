@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -17,8 +17,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type OSPFNeighbor struct {
@@ -39,12 +40,10 @@ func probeOSPFNeighbors(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Me
 		// not supported version. Before 7.0.0 the requested endpoint doesn't exist
 		return nil, true
 	}
-	var (
-		mOSPFNeighbor = prometheus.NewDesc(
-			"fortigate_ospf_neighbor_info",
-			"List all discovered OSPF neighbors, return state as value (1 - Down, 2 - Attempt, 3 - Init, 4 - Two way, 5 - Exchange start, 6 - Exchange, 7 - Loading, 8 - Full)",
-			[]string{"vdom", "state", "priority", "router_id", "neighbor_ip"}, nil,
-		)
+	mOSPFNeighbor := prometheus.NewDesc(
+		"fortigate_ospf_neighbor_info",
+		"List all discovered OSPF neighbors, return state as value (1 - Down, 2 - Attempt, 3 - Init, 4 - Two way, 5 - Exchange start, 6 - Exchange, 7 - Loading, 8 - Full)",
+		[]string{"vdom", "state", "priority", "router_id", "neighbor_ip"}, nil,
 	)
 
 	var rs []OSPFNeighborResponse

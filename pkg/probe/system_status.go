@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -17,17 +17,16 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
-func probeSystemStatus(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
-	var (
-		mVersion = prometheus.NewDesc(
-			"fortigate_version_info",
-			"System version and build information",
-			[]string{"serial", "version", "build"}, nil,
-		)
+func probeSystemStatus(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+	mVersion := prometheus.NewDesc(
+		"fortigate_version_info",
+		"System version and build information",
+		[]string{"serial", "version", "build"}, nil,
 	)
 
 	type systemStatus struct {

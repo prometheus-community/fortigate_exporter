@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,8 +16,9 @@ package probe
 import (
 	"log"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type LogResults struct {
@@ -30,7 +31,7 @@ type Log struct {
 	VDOM    string     `json:"vdom"`
 }
 
-func probeLogCurrentDiskUsage(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeLogCurrentDiskUsage(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		logUsed = prometheus.NewDesc(
 			"fortigate_log_disk_used_bytes",

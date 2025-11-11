@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -37,13 +37,13 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/probe"
-
-	"github.com/prometheus-community/fortigate_exporter/internal/config"
-	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	"github.com/prometheus-community/fortigate_exporter/internal/config"
+	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/probe"
 )
 
 var (
@@ -105,7 +105,7 @@ func main() {
 	}
 
 	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/probe", probe.ProbeHandler)
+	http.HandleFunc("/probe", probe.Handler)
 	go func() {
 		if err := http.ListenAndServe(savedConfig.Listen, nil); err != nil {
 			log.Fatalf("Unable to serve: %v", err)

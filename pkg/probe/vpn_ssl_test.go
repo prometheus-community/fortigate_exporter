@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -18,9 +18,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/prometheus-community/fortigate_exporter/internal/config"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
+
+	"github.com/prometheus-community/fortigate_exporter/internal/config"
 )
 
 func TestVPNSsl(t *testing.T) {

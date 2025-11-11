@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -17,9 +17,10 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/prometheus-community/fortigate_exporter/internal/config"
 	"github.com/prometheus-community/fortigate_exporter/pkg/http"
-	"github.com/prometheus/client_golang/prometheus"
 )
 
 type BGPPath struct {
@@ -85,13 +86,13 @@ func probeBGPNeighborPathsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]promet
 				Source: route.LearnedFrom,
 				VDOM:   r.VDOM,
 			}
-			srMap[sr] += 1
+			srMap[sr]++
 			if route.IsBest {
 				sr2 := PathCount{
 					Source: route.LearnedFrom,
 					VDOM:   r.VDOM,
 				}
-				sr2Map[sr2] += 1
+				sr2Map[sr2]++
 			}
 		}
 	}
@@ -153,13 +154,13 @@ func probeBGPNeighborPathsIPv6(c http.FortiHTTP, meta *TargetMetadata) ([]promet
 				Source: route.LearnedFrom,
 				VDOM:   r.VDOM,
 			}
-			srMap[sr] += 1
+			srMap[sr]++
 			if route.IsBest {
 				sr2 := PathCount{
 					Source: route.LearnedFrom,
 					VDOM:   r.VDOM,
 				}
-				sr2Map[sr2] += 1
+				sr2Map[sr2]++
 			}
 		}
 	}

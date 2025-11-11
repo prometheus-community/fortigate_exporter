@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,11 +16,12 @@ package probe
 import (
 	"log"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
-func probeSystemHAStatistics(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemHAStatistics(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		memberInfo = prometheus.NewDesc(
 			"fortigate_ha_member_info",
@@ -57,7 +58,7 @@ func probeSystemHAStatistics(c http.FortiHTTP, meta *TargetMetadata) ([]promethe
 			"IPS events processed by HA member",
 			[]string{"vdom", "hostname"}, nil,
 		)
-		memberCpuUsage = prometheus.NewDesc(
+		memberCPUUsage = prometheus.NewDesc(
 			"fortigate_ha_member_cpu_usage_ratio",
 			"CPU usage by HA member",
 			[]string{"vdom", "hostname"}, nil,
@@ -79,7 +80,7 @@ func probeSystemHAStatistics(c http.FortiHTTP, meta *TargetMetadata) ([]promethe
 		NetUsage         float64 `json:"net_usage"`
 		TransferredBytes float64 `json:"tbyte"`
 		IPSEvents        float64 `json:"intr_usage"`
-		CpuUsage         float64 `json:"cpu_usage"`
+		CPUUsage         float64 `json:"cpu_usage"`
 		MemUsage         float64 `json:"mem_usage"`
 	}
 
@@ -122,7 +123,7 @@ func probeSystemHAStatistics(c http.FortiHTTP, meta *TargetMetadata) ([]promethe
 		m = append(m, prometheus.MustNewConstMetric(memberNetworkUsage, prometheus.GaugeValue, result.NetUsage/100, r.VDOM, result.Hostname))
 		m = append(m, prometheus.MustNewConstMetric(memberBytesTotal, prometheus.CounterValue, result.TransferredBytes, r.VDOM, result.Hostname))
 		m = append(m, prometheus.MustNewConstMetric(memberIPSEvents, prometheus.CounterValue, result.IPSEvents, r.VDOM, result.Hostname))
-		m = append(m, prometheus.MustNewConstMetric(memberCpuUsage, prometheus.GaugeValue, result.CpuUsage/100, r.VDOM, result.Hostname))
+		m = append(m, prometheus.MustNewConstMetric(memberCPUUsage, prometheus.GaugeValue, result.CPUUsage/100, r.VDOM, result.Hostname))
 		m = append(m, prometheus.MustNewConstMetric(memberMemoryUsage, prometheus.GaugeValue, result.MemUsage/100, r.VDOM, result.Hostname))
 	}
 	return m, true

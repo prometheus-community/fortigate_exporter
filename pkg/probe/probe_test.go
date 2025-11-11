@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -36,8 +36,9 @@ import (
 	"net/url"
 
 	"github.com/google/go-jsonnet"
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type preparedResp struct {
@@ -49,7 +50,7 @@ type fakeClient struct {
 	data map[string][]preparedResp
 }
 
-func (c *fakeClient) prepare(path string, jfile string) {
+func (c *fakeClient) prepare(path, jfile string) {
 	u, err := url.Parse(path)
 	if err != nil {
 		panic(err)
@@ -65,7 +66,7 @@ func (c *fakeClient) prepare(path string, jfile string) {
 	})
 }
 
-func (c *fakeClient) Get(path string, query string, obj interface{}) error {
+func (c *fakeClient) Get(path, query string, obj any) error {
 	rs, ok := c.data[path]
 	if !ok {
 		log.Fatalf("Tried to get unprepared URL %q", path)
@@ -91,17 +92,17 @@ type Registry interface {
 	MustRegister(...prometheus.Collector)
 }
 
-type testProbeCollector struct {
+type testCollector struct {
 	metrics []prometheus.Metric
 }
 
-func (p *testProbeCollector) Collect(c chan<- prometheus.Metric) {
+func (p *testCollector) Collect(c chan<- prometheus.Metric) {
 	for _, m := range p.metrics {
 		c <- m
 	}
 }
 
-func (p *testProbeCollector) Describe(c chan<- *prometheus.Desc) {
+func (p *testCollector) Describe(_ chan<- *prometheus.Desc) {
 }
 
 func testProbe(pf probeFunc, c http.FortiHTTP, r Registry) bool {
@@ -117,7 +118,7 @@ func testProbeWithMetadata(pf probeFunc, c http.FortiHTTP, meta *TargetMetadata,
 	if !ok {
 		return false
 	}
-	p := &testProbeCollector{metrics: m}
+	p := &testCollector{metrics: m}
 	r.MustRegister(p)
 	return true
 }

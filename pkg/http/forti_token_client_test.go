@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -40,12 +40,12 @@ import (
 	"testing"
 )
 
-type fakeHTTPClient struct {
+type fakeClient struct {
 	status int
 	body   string
 }
 
-func (c *fakeHTTPClient) Do(r *http.Request) (*http.Response, error) {
+func (c *fakeClient) Do(_ *http.Request) (*http.Response, error) {
 	return &http.Response{
 		Body:       io.NopCloser(strings.NewReader(c.body)),
 		StatusCode: c.status,
@@ -56,7 +56,7 @@ func newClient(sc int, b string) (*fortiTokenClient, error) {
 	return newFortiTokenClient(
 		context.Background(),
 		url.URL{Scheme: "https", Host: "localhost"},
-		&fakeHTTPClient{sc, b},
+		&fakeClient{sc, b},
 		"TEST-TOKEN",
 	)
 }

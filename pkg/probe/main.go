@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -20,12 +20,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/prometheus-community/fortigate_exporter/internal/config"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	"github.com/prometheus-community/fortigate_exporter/internal/config"
 )
 
-func ProbeHandler(w http.ResponseWriter, r *http.Request) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	savedConfig := config.GetConfig()
 
 	params := r.URL.Query()
@@ -57,7 +58,7 @@ func ProbeHandler(w http.ResponseWriter, r *http.Request) {
 	registry.MustRegister(probeSuccessGauge)
 	registry.MustRegister(probeDurationGauge)
 	start := time.Now()
-	pc := &ProbeCollector{}
+	pc := &Collector{}
 	registry.MustRegister(pc)
 	success, err := pc.Probe(ctx, paramMap, &http.Client{}, savedConfig)
 	if err != nil {

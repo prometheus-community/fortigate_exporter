@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,8 +16,9 @@ package probe
 import (
 	"log"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type VPNCurrentResults struct {
@@ -36,7 +37,7 @@ type VPNStats struct {
 	Version string     `json:"version"`
 }
 
-func probeVPNSslStats(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeVPNSslStats(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		vpnCurUsr = prometheus.NewDesc(
 			"fortigate_vpn_ssl_users",

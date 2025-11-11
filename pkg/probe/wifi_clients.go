@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,11 +16,12 @@ package probe
 import (
 	"log"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
-func probeWifiClients(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeWifiClients(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		clientInfo = prometheus.NewDesc(
 			"fortigate_wifi_client_info",
@@ -77,13 +78,13 @@ func probeWifiClients(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metr
 		WtpName             string  `json:"wtp_name"`
 	}
 
-	type ApiWifiClientResponse []struct {
+	type APIWifiClientResponse []struct {
 		Results []Results `json:"results"`
 		VDOM    string    `json:"vdom"`
 	}
 
 	// Consider implementing pagination to remove this limit of 1000 entries
-	var response ApiWifiClientResponse
+	var response APIWifiClientResponse
 	if err := c.Get("api/v2/monitor/wifi/client", "vdom=*&start=0&count=1000", &response); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false

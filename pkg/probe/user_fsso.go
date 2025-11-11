@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -17,8 +17,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type UserFssoResults struct {
@@ -33,13 +34,11 @@ type UserFsso struct {
 	VDOM    string            `json:"vdom"`
 }
 
-func probeUserFsso(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
-	var (
-		FssoUsers = prometheus.NewDesc(
-			"fortigate_user_fsso_info",
-			"Info on Fsso defined connectors",
-			[]string{"vdom", "name", "id", "type", "status"}, nil,
-		)
+func probeUserFsso(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+	FssoUsers := prometheus.NewDesc(
+		"fortigate_user_fsso_info",
+		"Info on Fsso defined connectors",
+		[]string{"vdom", "name", "id", "type", "status"}, nil,
 	)
 
 	var res []UserFsso

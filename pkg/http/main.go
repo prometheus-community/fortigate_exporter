@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -27,11 +27,10 @@ import (
 )
 
 type FortiHTTP interface {
-	Get(path string, query string, obj interface{}) error
+	Get(path, query string, obj any) error
 }
 
 func NewFortiClient(ctx context.Context, tgt url.URL, hc *http.Client, aConfig config.FortiExporterConfig) (FortiHTTP, error) {
-
 	auth, ok := aConfig.AuthKeys[config.Target(tgt.String())]
 	if !ok {
 		return nil, fmt.Errorf("no API authentication registered for %q", tgt.String())
@@ -56,8 +55,7 @@ func Configure(config config.FortiExporterConfig) error {
 		log.Fatalf("Unable to fetch system CA store: %v", err)
 		return err
 	}
-	for _, cert := range config.TlsExtraCAs {
-
+	for _, cert := range config.TLSExtraCAs {
 		if ok := roots.AppendCertsFromPEM(cert.Content); !ok {
 			return fmt.Errorf("failed to append certs from PEM %q, unknown error", cert.Path)
 		}

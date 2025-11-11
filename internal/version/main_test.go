@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -36,24 +36,24 @@ import (
 
 func TestVersionParseOK(t *testing.T) {
 	for _, tv := range []struct {
-		v   string
-		maj int
-		min int
-		ok  bool
+		v     string
+		major int
+		minor int
+		ok    bool
 	}{
-		{v: "v6.4.4", maj: 6, min: 4, ok: true},
+		{v: "v6.4.4", major: 6, minor: 4, ok: true},
 		{v: "1.0.0", ok: false},
 	} {
 		t.Run(tv.v, func(t *testing.T) {
-			maj, min, ok := ParseVersion(tv.v)
+			major, minor, ok := ParseVersion(tv.v)
 			if !tv.ok {
 				if ok {
 					t.Errorf("Expected %q to fail to parse, succeeded", tv.v)
 				}
 				return
 			}
-			if maj != tv.maj || min != tv.min {
-				t.Errorf("Expected %q to be (%d, %d), was (%d, %d)", tv.v, tv.maj, tv.min, maj, min)
+			if major != tv.major || minor != tv.minor {
+				t.Errorf("Expected %q to be (%d, %d), was (%d, %d)", tv.v, tv.major, tv.minor, major, minor)
 			}
 		})
 	}

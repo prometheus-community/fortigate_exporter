@@ -1,4 +1,4 @@
-// Copyright 2025 The Prometheus Authors
+// Copyright The Prometheus Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -17,8 +17,9 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type BGPNeighbor struct {
@@ -40,12 +41,10 @@ func probeBGPNeighborsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 		// not supported version. Before 7.0.0 the requested endpoint doesn't exist
 		return nil, true
 	}
-	var (
-		mBGPNeighbor = prometheus.NewDesc(
-			"fortigate_bgp_neighbor_ipv4_info",
-			"Configured bgp neighbor over ipv4, return state as value (1 - Idle, 2 - Connect, 3 - Active, 4 - Open sent, 5 - Open confirm, 6 - Established)",
-			[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
-		)
+	mBGPNeighbor := prometheus.NewDesc(
+		"fortigate_bgp_neighbor_ipv4_info",
+		"Configured bgp neighbor over ipv4, return state as value (1 - Idle, 2 - Connect, 3 - Active, 4 - Open sent, 5 - Open confirm, 6 - Established)",
+		[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
 	)
 
 	var rs []BGPNeighborResponse
@@ -72,12 +71,10 @@ func probeBGPNeighborsIPv6(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 		return nil, true
 	}
 
-	var (
-		mBGPNeighbor = prometheus.NewDesc(
-			"fortigate_bgp_neighbor_ipv6_info",
-			"Configured bgp neighbor over ipv6, return state as value (1 - Idle, 2 - Connect, 3 - Active, 4 - Open sent, 5 - Open confirm, 6 - Established)",
-			[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
-		)
+	mBGPNeighbor := prometheus.NewDesc(
+		"fortigate_bgp_neighbor_ipv6_info",
+		"Configured bgp neighbor over ipv6, return state as value (1 - Idle, 2 - Connect, 3 - Active, 4 - Open sent, 5 - Open confirm, 6 - Established)",
+		[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
 	)
 
 	var rs []BGPNeighborResponse
