@@ -144,6 +144,7 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		{"Log/Fortianalyzer/Queue", probeLogAnalyzerQueue},
 		{"Log/DiskUsage", probeLogCurrentDiskUsage},
 		{"System/AvailableCertificates", probeSystemAvailableCertificates},
+		{"System/ArpTable", probeSystemArpTable},
 		{"System/Fortimanager/Status", probeSystemFortimanagerStatus},
 		{"System/HAStatistics", probeSystemHAStatistics},
 		{"System/Interface", probeSystemInterface},
