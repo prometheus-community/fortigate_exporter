@@ -180,7 +180,7 @@ To improve security, limit permissions to required ones only (least privilege pr
 |Log/DiskUsage                | loggrp.config      |api/v2/monitor/log/current-disk-usage |
 |Network/Dns/Latency          | sysgrp.cfg         |api/v2/monitor/network/dns/latency |
 |System/AvailableCertificates | *any*              |api/v2/monitor/system/available-certificates |
-|System/Central-management/Status | sysgrp.cfg         |api/v2/monitor/system/central-management/status|
+|System/CentralManagement/Status | sysgrp.cfg         |api/v2/monitor/system/central-management/status|
 |System/Fortimanager/Status   | sysgrp.cfg         |api/v2/monitor/system/fortimanager/status |
 |System/Global/Location       | sysgrp.cfg         |api/v2/cmdb/system/global |
 |System/HAStatistics          | sysgrp.cfg         |api/v2/monitor/system/ha-statistics<br>api/v2/cmdb/system/ha |
