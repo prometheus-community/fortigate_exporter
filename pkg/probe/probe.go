@@ -148,6 +148,7 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		{"System/Central-Management/Status", probeSystemCentralManagementStatus},
 		{"System/Fortimanager/Status", probeSystemFortimanagerStatus},
 		{"System/HAStatistics", probeSystemHAStatistics},
+		{"System/Ha-peer", probeSystemHaPeer},
 		{"System/Interface", probeSystemInterface},
 		{"System/Interface/Transceivers", probeSystemInterfaceTransceivers},
 		{"System/LinkMonitor", probeSystemLinkMonitor},
