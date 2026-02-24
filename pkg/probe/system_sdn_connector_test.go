@@ -46,6 +46,10 @@ func TestSystemSDNConnector(t *testing.T) {
 	fortigate_system_sdn_connector_state{name="GCP Infra",state="Unknown",type="gcp",vdom="google"} 0
 	fortigate_system_sdn_connector_state{name="GCP Infra",state="Up",type="gcp",vdom="google"} 0
 	fortigate_system_sdn_connector_state{name="GCP Infra",state="Updating",type="gcp",vdom="google"} 0
+	# HELP fortigate_system_sdn_connector_status Status of SDN connectors (0=Disabled, 1=Down, 2=Unknown, 3=Up, 4=Updating)
+	# TYPE fortigate_system_sdn_connector_status gauge
+	fortigate_system_sdn_connector_status{name="AWS Infra",type="aws",vdom="root"} 3
+	fortigate_system_sdn_connector_status{name="GCP Infra",type="gcp",vdom="google"} 1
 	`
 
 	if err := testutil.GatherAndCompare(r, strings.NewReader(em)); err != nil {

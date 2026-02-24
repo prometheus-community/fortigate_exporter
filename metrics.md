@@ -89,6 +89,7 @@ Per-VDOM:
  * _System/Interface/Transceivers_
    * `fortigate_inteface_transceivers_info`
  * _System/SDNConnector_
+   * `fortigate_system_sdn_connector_state`
    * `fortigate_system_sdn_connector_status`
    * `fortigate_system_sdn_connector_last_update_seconds`
  * _/System/CentralManagement/Status_
