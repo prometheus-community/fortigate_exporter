@@ -133,10 +133,11 @@ func probeBGPNeighborsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 		return probeBGPNeighborsIPv4Old(c, meta)
 	}
 
-	var mBGPNeighborState= prometheus.NewDesc(
-			"fortigate_bgp_neighbor_ipv4_state",
-			"Configured bgp neighbor over ipv4 state",
-			[]string{"vdom", "remote_as", "admin_status", "local_ip", "neighbor_ip", "state"}, nil,)
+	mBGPNeighborState := prometheus.NewDesc(
+		"fortigate_bgp_neighbor_ipv4_state",
+		"Configured bgp neighbor over ipv4 state",
+		[]string{"vdom", "remote_as", "admin_status", "local_ip", "neighbor_ip", "state"}, nil,
+	)
 
 	var rs []BGPNeighborResponse
 
@@ -183,10 +184,11 @@ func probeBGPNeighborsIPv6(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 		return probeBGPNeighborsIPv6Old(c, meta)
 	}
 
-	var mBGPNeighborState = prometheus.NewDesc(
-			"fortigate_bgp_neighbor_ipv6_state",
-			"Configured bgp neighbor over ipv4 state",
-			[]string{"vdom", "remote_as", "admin_status", "local_ip", "neighbor_ip", "state"}, nil,)
+	mBGPNeighborState := prometheus.NewDesc(
+		"fortigate_bgp_neighbor_ipv6_state",
+		"Configured bgp neighbor over ipv6 state",
+		[]string{"vdom", "remote_as", "admin_status", "local_ip", "neighbor_ip", "state"}, nil,
+	)
 
 	var rs []BGPNeighborResponse
 

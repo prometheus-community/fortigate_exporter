@@ -175,8 +175,10 @@ Per-VDOM:
  Per-BGP-Neighbor and VDOM:
  * _BGP/Neighbors/IPv4_
    * `fortigate_bgp_neighbor_ipv4_info`
+   * `fortigate_bgp_neighbor_ipv4_state`
  * _BGP/Neighbors/IPv6_
    * `fortigate_bgp_neighbor_ipv6_info`
+   * `fortigate_bgp_neighbor_ipv6_state`
  * _BGP/NeighborPaths/IPv4_
    * `fortigate_bgp_neighbor_ipv4_paths`
    * `fortigate_bgp_neighbor_ipv4_best_paths`
