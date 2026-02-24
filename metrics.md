@@ -12,6 +12,7 @@ Global:
    * `fortigate_sensor_thresholds`
  * _System/Status_
    * `fortigate_version_info`
+   * `fortigate_system_status_log_disk_state`
  * _System/Transceivers_
    * `fortigate_interface_transceivers`
  * _System/Time/Clock_
