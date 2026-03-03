@@ -22,7 +22,7 @@ import (
 	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
-type BGPNeighborOld struct {
+type BGPNeighbor7_4 struct {
 	NeighborIP  string `json:"neighbor_ip"`
 	LocalIP     string `json:"local_ip"`
 	RemoteAS    int    `json:"remote_as"`
@@ -30,13 +30,13 @@ type BGPNeighborOld struct {
 	State       string `json:"state"`
 }
 
-type BGPNeighborResponseOld struct {
-	Results []BGPNeighborOld `json:"results"`
+type BGPNeighborResponse7_4 struct {
+	Results []BGPNeighbor7_4 `json:"results"`
 	VDOM    string           `json:"vdom"`
 	Version string           `json:"version"`
 }
 
-func probeBGPNeighborsIPv4Old(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeBGPNeighborsIPv47_4(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	if meta.VersionMajor < 7 {
 		// not supported version. Before 7.0.0 the requested endpoint doesn't exist
 		return nil, true
@@ -47,7 +47,7 @@ func probeBGPNeighborsIPv4Old(c http.FortiHTTP, meta *TargetMetadata) ([]prometh
 		[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
 	)
 
-	var rs []BGPNeighborResponseOld
+	var rs []BGPNeighborResponse7_4
 
 	if err := c.Get("api/v2/monitor/router/bgp/neighbors", "vdom=*", &rs); err != nil {
 		log.Printf("Error: %v", err)
@@ -65,7 +65,7 @@ func probeBGPNeighborsIPv4Old(c http.FortiHTTP, meta *TargetMetadata) ([]prometh
 	return m, true
 }
 
-func probeBGPNeighborsIPv6Old(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeBGPNeighborsIPv67_4(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	if meta.VersionMajor < 7 {
 		// not supported version. Before 7.0.0 the requested endpoint doesn't exist
 		return nil, true
@@ -77,7 +77,7 @@ func probeBGPNeighborsIPv6Old(c http.FortiHTTP, meta *TargetMetadata) ([]prometh
 		[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
 	)
 
-	var rs []BGPNeighborResponseOld
+	var rs []BGPNeighborResponse7_4
 
 	if err := c.Get("api/v2/monitor/router/bgp/neighbors6", "vdom=*", &rs); err != nil {
 		log.Printf("Error: %v", err)
@@ -130,7 +130,7 @@ type BGPNeighborResponse struct {
 
 func probeBGPNeighborsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	if meta.VersionMajor == 7 && meta.VersionMinor < 6 {
-		return probeBGPNeighborsIPv4Old(c, meta)
+		return probeBGPNeighborsIPv47_4(c, meta)
 	}
 
 	mBGPNeighborState := prometheus.NewDesc(
@@ -181,7 +181,7 @@ func probeBGPNeighborsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 
 func probeBGPNeighborsIPv6(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	if meta.VersionMajor == 7 && meta.VersionMinor < 6 {
-		return probeBGPNeighborsIPv6Old(c, meta)
+		return probeBGPNeighborsIPv67_4(c, meta)
 	}
 
 	mBGPNeighborState := prometheus.NewDesc(

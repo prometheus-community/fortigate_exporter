@@ -23,7 +23,7 @@ import (
 
 func TestBGPNeighborsIPv4Old(t *testing.T) {
 	c := newFakeClient()
-	c.prepare("api/v2/monitor/router/bgp/neighbors", "testdata/router-bgp-neighbors-v4old.jsonnet")
+	c.prepare("api/v2/monitor/router/bgp/neighbors", "testdata/router-bgp-neighbors-v4-7.4.jsonnet")
 	r := prometheus.NewPedanticRegistry()
 	meta := &TargetMetadata{
 		VersionMajor: 7,
@@ -46,7 +46,7 @@ func TestBGPNeighborsIPv4Old(t *testing.T) {
 
 func TestBGPNeighborsIPv6Old(t *testing.T) {
 	c := newFakeClient()
-	c.prepare("api/v2/monitor/router/bgp/neighbors6", "testdata/router-bgp-neighbors-v6old.jsonnet")
+	c.prepare("api/v2/monitor/router/bgp/neighbors6", "testdata/router-bgp-neighbors-v6-7.4.jsonnet")
 	r := prometheus.NewPedanticRegistry()
 	meta := &TargetMetadata{
 		VersionMajor: 7,
@@ -120,7 +120,7 @@ func TestBGPNeighborsIPv6(t *testing.T) {
 	}
 
 	em := `
-	# HELP fortigate_bgp_neighbor_ipv6_state Configured bgp neighbor over ipv4 state
+	# HELP fortigate_bgp_neighbor_ipv6_state Configured bgp neighbor over ipv6 state
 	# TYPE fortigate_bgp_neighbor_ipv6_state gauge
 	fortigate_bgp_neighbor_ipv6_state{admin_status="true",local_ip="fd00::1",neighbor_ip="fd00::2",remote_as="1337",state="Active",vdom="root"} 0
 	fortigate_bgp_neighbor_ipv6_state{admin_status="true",local_ip="fd00::1",neighbor_ip="fd00::2",remote_as="1337",state="Connect",vdom="root"} 0
