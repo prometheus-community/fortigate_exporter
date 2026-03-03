@@ -26,12 +26,12 @@ func probeSystemStatus(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric
 	mVersion := prometheus.NewDesc(
 		"fortigate_version_info",
 		"System version and build information",
-		[]string{"serial", "version", "build", "name", "number", "module", "hostname"}, nil,
+		[]string{"serial", "version", "build", "model_name", "model_number", "model", "hostname"}, nil,
 	)
 	mLogDiskState := prometheus.NewDesc(
 		"fortigate_system_status_log_disk_state",
 		"System log disk availability state",
-		[]string{"serial", "version", "build", "name", "number", "module", "hostname", "state"}, nil,
+		[]string{"state"}, nil,
 	)
 
 	type systemResult struct {
@@ -57,17 +57,17 @@ func probeSystemStatus(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric
 	}
 
 	m := []prometheus.Metric{
-		prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 0.0, st.Serial, st.Version, fmt.Sprintf("%d", st.Build), st.Results.Name, st.Results.Number, st.Results.Model, st.Results.Hostname, "available"),
-		prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 0.0, st.Serial, st.Version, fmt.Sprintf("%d", st.Build), st.Results.Name, st.Results.Number, st.Results.Model, st.Results.Hostname, "need_format"),
-		prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 0.0, st.Serial, st.Version, fmt.Sprintf("%d", st.Build), st.Results.Name, st.Results.Number, st.Results.Model, st.Results.Hostname, "not_available"),
+		prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 0.0, "available"),
+		prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 0.0, "need_format"),
+		prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 0.0, "not_available"),
 	}
 	switch st.Results.LogDiskStatus {
 	case "available":
-		m[0] = prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 1.0, st.Serial, st.Version, fmt.Sprintf("%d", st.Build), st.Results.Name, st.Results.Number, st.Results.Model, st.Results.Hostname, st.Results.LogDiskStatus)
+		m[0] = prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 1.0, st.Results.LogDiskStatus)
 	case "need_format":
-		m[1] = prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 1.0, st.Serial, st.Version, fmt.Sprintf("%d", st.Build), st.Results.Name, st.Results.Number, st.Results.Model, st.Results.Hostname, st.Results.LogDiskStatus)
+		m[1] = prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 1.0, st.Results.LogDiskStatus)
 	case "not_available":
-		m[2] = prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 1.0, st.Serial, st.Version, fmt.Sprintf("%d", st.Build), st.Results.Name, st.Results.Number, st.Results.Model, st.Results.Hostname, st.Results.LogDiskStatus)
+		m[2] = prometheus.MustNewConstMetric(mLogDiskState, prometheus.GaugeValue, 1.0, st.Results.LogDiskStatus)
 	}
 	m = append(m, prometheus.MustNewConstMetric(mVersion, prometheus.GaugeValue, 1.0, st.Serial, st.Version, fmt.Sprintf("%d", st.Build), st.Results.Name, st.Results.Number, st.Results.Model, st.Results.Hostname))
 	return m, true
