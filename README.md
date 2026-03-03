@@ -182,6 +182,7 @@ To improve security, limit permissions to required ones only (least privilege pr
 |System/AvailableCertificates | *any*              |api/v2/monitor/system/available-certificates |
 |System/Central-management/Status | sysgrp.cfg         |api/v2/monitor/system/central-management/status|
 |System/Fortimanager/Status   | sysgrp.cfg         |api/v2/monitor/system/fortimanager/status |
+|System/Global/Location       | sysgrp.cfg         |api/v2/cmdb/system/global |
 |System/HAStatistics          | sysgrp.cfg         |api/v2/monitor/system/ha-statistics<br>api/v2/cmdb/system/ha |
 |System/Ha-peer               | sysgrp.cfg         |api/v2/monitor/system/ha-peer |
 |System/Interface             | netgrp.cfg         |api/v2/monitor/system/interface/select |
@@ -191,19 +192,23 @@ To improve security, limit permissions to required ones only (least privilege pr
 |System/Ntp/Status            | netgrp.cfg         |api/v2/monitor/system/ntp/status |
 |System/Resource/Usage        | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
 |System/Resource/Usage/VDOM   | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
+|System/SDNConnector          | sysgrp.cfg         |api/v2/monitor/system/sdn-connector/status |
 |System/SensorInfo            | sysgrp.cfg         |api/v2/monitor/system/sensor-info |
 |System/Status                | *any*              |api/v2/monitor/system/status |
 |System/Time/Clock            | sysgrp.cfg         |api/v2/monitor/system/time |
-|System/System/VDOMResource   | sysgrp.cfg         |api/v2/monitor/system/vdom-resource |
+|System/VDOMResource          | sysgrp.cfg         |api/v2/monitor/system/vdom-resource |
+|System/HAChecksum            | sysgrp.cfg         |api/v2/monitor/system/ha-checksums |
 |User/Fsso                    | authgrp            |api/v2/monitor/user/fsso |
 |VPN/IPSec                    | vpngrp             |api/v2/monitor/vpn/ipsec |
 |VPN/Ssl/Connections          | vpngrp             |api/v2/monitor/vpn/ssl |
 |VPN/Ssl/Stats                | vpngrp             |api/v2/monitor/vpn/ssl/stats |
 |VirtualWAN/HealthCheck       | netgrp.cfg         |api/v2/monitor/virtual-wan/health-check |
+|WebUI/State                  | sysgrp.cfg         |api/v2/monitor/web-ui/state |
 |Wifi/APStatus                | wifi               |api/v2/monitor/wifi/ap_status |
 |Wifi/Clients                 | wifi               |api/v2/monitor/wifi/client |
 |Wifi/ManagedAP               | wifi               |api/v2/monitor/wifi/managed_ap |
 |Switch/ManagedSwitch         | switch	           |api/v2/monitor/switch-controller/managed-switch|
+|OSPF/Neighbors               | netgrp.route-cfg   |api/v2/monitor/router/ospf/neighbors |
 If you omit to grant some of these permissions you will receive log messages warning about
 403 errors and relevant metrics will be unavailable, but other metrics will still work.
 If you do not need some probes to be run, do not grant permission for them and use `include/exclude` feature (see `Usage` section).
