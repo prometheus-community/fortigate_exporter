@@ -1,15 +1,29 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package probe
 
 import (
 	"fmt"
 	"log"
 
-	"github.com/bluecmd/fortigate_exporter/internal/version"
-	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/internal/version"
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
-func probeFirewallPolicies(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeFirewallPolicies(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		mHitCount = prometheus.NewDesc(
 			"fortigate_policy_hit_count_total",
@@ -67,13 +81,13 @@ func probeFirewallPolicies(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 	}
 
 	combined := false
-	maj, min, ok := version.ParseVersion(ps4[0].Version)
+	major, minor, ok := version.ParseVersion(ps4[0].Version)
 	if !ok {
 		log.Printf("Could not parse version number %q", ps4[0].Version)
 		return nil, false
 	}
 	// If we are at 6.4 or later we use combined policies
-	if maj > 6 || (maj == 6 && min >= 4) {
+	if major > 6 || (major == 6 && minor >= 4) {
 		combined = true
 	}
 

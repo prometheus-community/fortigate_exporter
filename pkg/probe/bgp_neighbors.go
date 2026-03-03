@@ -1,11 +1,25 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package probe
 
 import (
 	"log"
 	"strconv"
 
-	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type BGPNeighbor struct {
@@ -27,12 +41,10 @@ func probeBGPNeighborsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 		// not supported version. Before 7.0.0 the requested endpoint doesn't exist
 		return nil, true
 	}
-	var (
-		mBGPNeighbor = prometheus.NewDesc(
-			"fortigate_bgp_neighbor_ipv4_info",
-			"Configured bgp neighbor over ipv4, return state as value (1 - Idle, 2 - Connect, 3 - Active, 4 - Open sent, 5 - Open confirm, 6 - Established)",
-			[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
-		)
+	mBGPNeighbor := prometheus.NewDesc(
+		"fortigate_bgp_neighbor_ipv4_info",
+		"Configured bgp neighbor over ipv4, return state as value (1 - Idle, 2 - Connect, 3 - Active, 4 - Open sent, 5 - Open confirm, 6 - Established)",
+		[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
 	)
 
 	var rs []BGPNeighborResponse
@@ -59,12 +71,10 @@ func probeBGPNeighborsIPv6(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus
 		return nil, true
 	}
 
-	var (
-		mBGPNeighbor = prometheus.NewDesc(
-			"fortigate_bgp_neighbor_ipv6_info",
-			"Configured bgp neighbor over ipv6, return state as value (1 - Idle, 2 - Connect, 3 - Active, 4 - Open sent, 5 - Open confirm, 6 - Established)",
-			[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
-		)
+	mBGPNeighbor := prometheus.NewDesc(
+		"fortigate_bgp_neighbor_ipv6_info",
+		"Configured bgp neighbor over ipv6, return state as value (1 - Idle, 2 - Connect, 3 - Active, 4 - Open sent, 5 - Open confirm, 6 - Established)",
+		[]string{"vdom", "remote_as", "state", "admin_status", "local_ip", "neighbor_ip"}, nil,
 	)
 
 	var rs []BGPNeighborResponse

@@ -1,13 +1,27 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package probe
 
 import (
 	"log"
 
-	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
-func probeVirtualWANHealthCheck(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeVirtualWANHealthCheck(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		mLink = prometheus.NewDesc(
 			"fortigate_virtual_wan_status",
@@ -68,7 +82,7 @@ func probeVirtualWANHealthCheck(c http.FortiHTTP, meta *TargetMetadata) ([]prome
 		PacketLoss     float64 `json:"packet_loss"`
 		PacketSent     float64 `json:"packet_sent"`
 		PacketReceived float64 `json:"packet_received"`
-		//todo add slatargetmet
+		// todo add slatargetmet
 		SLATargetMet []float64 `json:"sla_targets_met"`
 		Session      float64   `json:"session"`
 		TxBandwidth  float64   `json:"tx_bandwidth"`
@@ -104,16 +118,12 @@ func probeVirtualWANHealthCheck(c http.FortiHTTP, meta *TargetMetadata) ([]prome
 				switch Member.Status {
 				case "up":
 					MemberStatusUp = 1.0
-					break
 				case "down":
 					MemberStatusDown = 1.0
-					break
 				case "error":
 					MemberStatusError = 1.0
-					break
 				case "disable":
 					MemberStatusDisable = 1.0
-					break
 				default:
 					MemberStatusUnknown = 1.0
 				}

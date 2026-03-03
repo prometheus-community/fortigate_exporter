@@ -1,3 +1,16 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 // Tests of fortigate_exporter
 //
 // Copyright (C) 2020  Christian Svensson
@@ -22,9 +35,10 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/google/go-jsonnet"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type preparedResp struct {
@@ -36,7 +50,7 @@ type fakeClient struct {
 	data map[string][]preparedResp
 }
 
-func (c *fakeClient) prepare(path string, jfile string) {
+func (c *fakeClient) prepare(path, jfile string) {
 	u, err := url.Parse(path)
 	if err != nil {
 		panic(err)
@@ -52,7 +66,7 @@ func (c *fakeClient) prepare(path string, jfile string) {
 	})
 }
 
-func (c *fakeClient) Get(path string, query string, obj interface{}) error {
+func (c *fakeClient) Get(path, query string, obj any) error {
 	rs, ok := c.data[path]
 	if !ok {
 		log.Fatalf("Tried to get unprepared URL %q", path)
@@ -78,23 +92,23 @@ type Registry interface {
 	MustRegister(...prometheus.Collector)
 }
 
-type testProbeCollector struct {
+type testCollector struct {
 	metrics []prometheus.Metric
 }
 
-func (p *testProbeCollector) Collect(c chan<- prometheus.Metric) {
+func (p *testCollector) Collect(c chan<- prometheus.Metric) {
 	for _, m := range p.metrics {
 		c <- m
 	}
 }
 
-func (p *testProbeCollector) Describe(c chan<- *prometheus.Desc) {
+func (p *testCollector) Describe(_ chan<- *prometheus.Desc) {
 }
 
 func testProbe(pf probeFunc, c http.FortiHTTP, r Registry) bool {
 	meta := &TargetMetadata{
 		VersionMajor: 7,
-		VersionMinor: 0,
+		VersionMinor: 4,
 	}
 	return testProbeWithMetadata(pf, c, meta, r)
 }
@@ -104,7 +118,7 @@ func testProbeWithMetadata(pf probeFunc, c http.FortiHTTP, meta *TargetMetadata,
 	if !ok {
 		return false
 	}
-	p := &testProbeCollector{metrics: m}
+	p := &testCollector{metrics: m}
 	r.MustRegister(p)
 	return true
 }

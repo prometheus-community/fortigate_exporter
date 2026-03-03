@@ -1,3 +1,16 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package probe
 
 import (
@@ -17,9 +30,14 @@ func TestSystemStatus(t *testing.T) {
 	}
 
 	em := `
+	# HELP fortigate_system_status_log_disk_state System log disk availability state
+	# TYPE fortigate_system_status_log_disk_state gauge
+	fortigate_system_status_log_disk_state{state="available"} 0
+	fortigate_system_status_log_disk_state{state="need_format"} 0
+	fortigate_system_status_log_disk_state{state="not_available"} 1
 	# HELP fortigate_version_info System version and build information
 	# TYPE fortigate_version_info gauge
-	fortigate_version_info{build="1112",serial="FGVMEVZFNTS3OAC8",version="v6.2.4"} 1
+	fortigate_version_info{build="1112",hostname="fgt-test-1",model="F2K60F",model_name="FortiGate",model_number="2600F",serial="FGVMEVZFNTS3OAC8",version="v6.2.4"} 1
 	`
 
 	if err := testutil.GatherAndCompare(r, strings.NewReader(em)); err != nil {

@@ -1,14 +1,28 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package probe
 
 import (
 	"log"
 	"strconv"
 
-	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
-func probeWifiManagedAP(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeWifiManagedAP(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		managedAPInfo = prometheus.NewDesc(
 			"fortigate_wifi_managed_ap_info",
@@ -210,19 +224,19 @@ func probeWifiManagedAP(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Me
 			m = append(m, prometheus.MustNewConstMetric(managedAPMemTotal, prometheus.GaugeValue, result.MemTotal, result.VDOM, result.Name))
 
 			for _, radio := range result.Radio {
-				radioId := strconv.Itoa(radio.RadioID)
-				m = append(m, prometheus.MustNewConstMetric(radioClientInfo, prometheus.CounterValue, 1, result.VDOM, result.Name, radioId, strconv.Itoa(radio.OperChan)))
-				m = append(m, prometheus.MustNewConstMetric(radioClientCount, prometheus.GaugeValue, radio.ClientCount, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioClientOperTxPower, prometheus.GaugeValue, radio.OperTxpower/100, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioClientChannelUtilization, prometheus.GaugeValue, radio.ChannelUtilizationPercent/100, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioClientRadioBandwidthRx, prometheus.GaugeValue, radio.BandwidthRx, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioClientRadioBandwidthTx, prometheus.GaugeValue, radio.BandwidthTx, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioClientRadioRxBytes, prometheus.GaugeValue, radio.BytesRx, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioClientRadioTxBytes, prometheus.GaugeValue, radio.BytesTx, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioInterferingAps, prometheus.GaugeValue, radio.InterferingAps, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioTxPower, prometheus.GaugeValue, radio.Txpower/100, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioTxRetryPercentage, prometheus.GaugeValue, radio.TxRetriesPercent/100, result.VDOM, result.Name, radioId))
-				m = append(m, prometheus.MustNewConstMetric(radioTxDiscardPercentage, prometheus.GaugeValue, radio.TxDiscardPercentage/100, result.VDOM, result.Name, radioId))
+				radioID := strconv.Itoa(radio.RadioID)
+				m = append(m, prometheus.MustNewConstMetric(radioClientInfo, prometheus.CounterValue, 1, result.VDOM, result.Name, radioID, strconv.Itoa(radio.OperChan)))
+				m = append(m, prometheus.MustNewConstMetric(radioClientCount, prometheus.GaugeValue, radio.ClientCount, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioClientOperTxPower, prometheus.GaugeValue, radio.OperTxpower/100, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioClientChannelUtilization, prometheus.GaugeValue, radio.ChannelUtilizationPercent/100, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioClientRadioBandwidthRx, prometheus.GaugeValue, radio.BandwidthRx, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioClientRadioBandwidthTx, prometheus.GaugeValue, radio.BandwidthTx, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioClientRadioRxBytes, prometheus.GaugeValue, radio.BytesRx, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioClientRadioTxBytes, prometheus.GaugeValue, radio.BytesTx, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioInterferingAps, prometheus.GaugeValue, radio.InterferingAps, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioTxPower, prometheus.GaugeValue, radio.Txpower/100, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioTxRetryPercentage, prometheus.GaugeValue, radio.TxRetriesPercent/100, result.VDOM, result.Name, radioID))
+				m = append(m, prometheus.MustNewConstMetric(radioTxDiscardPercentage, prometheus.GaugeValue, radio.TxDiscardPercentage/100, result.VDOM, result.Name, radioID))
 			}
 
 			for _, wired := range result.Wired {

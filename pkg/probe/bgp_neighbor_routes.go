@@ -1,12 +1,26 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package probe
 
 import (
 	"fmt"
 	"log"
 
-	"github.com/bluecmd/fortigate_exporter/internal/config"
-	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/internal/config"
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 type BGPPath struct {
@@ -72,13 +86,13 @@ func probeBGPNeighborPathsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]promet
 				Source: route.LearnedFrom,
 				VDOM:   r.VDOM,
 			}
-			srMap[sr] += 1
+			srMap[sr]++
 			if route.IsBest {
 				sr2 := PathCount{
 					Source: route.LearnedFrom,
 					VDOM:   r.VDOM,
 				}
-				sr2Map[sr2] += 1
+				sr2Map[sr2]++
 			}
 		}
 	}
@@ -140,13 +154,13 @@ func probeBGPNeighborPathsIPv6(c http.FortiHTTP, meta *TargetMetadata) ([]promet
 				Source: route.LearnedFrom,
 				VDOM:   r.VDOM,
 			}
-			srMap[sr] += 1
+			srMap[sr]++
 			if route.IsBest {
 				sr2 := PathCount{
 					Source: route.LearnedFrom,
 					VDOM:   r.VDOM,
 				}
-				sr2Map[sr2] += 1
+				sr2Map[sr2]++
 			}
 		}
 	}

@@ -1,3 +1,16 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package probe
 
 import (
@@ -5,8 +18,9 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
 func probeFirewallLoadBalance(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
@@ -103,33 +117,29 @@ func probeFirewallLoadBalance(c http.FortiHTTP, meta *TargetMetadata) ([]prometh
 				switch realServer.Mode {
 				case "active":
 					realServerModeActive = 1.0
-					break
 				case "standby":
 					realServerModeStandby = 1.0
-					break
 				case "disabled":
 					realServerModeDisabled = 1.0
-					break
 				}
 
 				realServerStatusUp, realServerStatusDown, realServerStatusUnknown := 0.0, 0.0, 0.0
 				switch realServer.Status {
 				case "up":
 					realServerStatusUp = 1.0
-					break
 				case "down":
 					realServerStatusDown = 1.0
-					break
 				default:
 					realServerStatusUnknown = 1.0
 				}
 
 				realServerRTTValue := math.NaN()
-				if "<1" == realServer.RTT {
+				switch realServer.RTT {
+				case "<1":
 					realServerRTTValue = 0.001
-				} else if "" == realServer.RTT {
+				case "":
 					// NaN
-				} else {
+				default:
 					if realServerRTTValueInMs, err := strconv.ParseFloat(realServer.RTT, 64); err != nil {
 						log.Printf("Failed to parse RTT value: %v", err)
 					} else {

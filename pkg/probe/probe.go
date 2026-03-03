@@ -1,3 +1,16 @@
+// Copyright The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 // All currently supported probes
 //
 // Copyright (C) 2020  Christian Svensson
@@ -25,13 +38,14 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/bluecmd/fortigate_exporter/internal/config"
-	"github.com/bluecmd/fortigate_exporter/internal/version"
-	fortiHTTP "github.com/bluecmd/fortigate_exporter/pkg/http"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/prometheus-community/fortigate_exporter/internal/config"
+	"github.com/prometheus-community/fortigate_exporter/internal/version"
+	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/http"
 )
 
-type ProbeCollector struct {
+type Collector struct {
 	metrics []prometheus.Metric
 }
 
@@ -47,14 +61,14 @@ type probeDetailedFunc struct {
 	function probeFunc
 }
 
-func (p *ProbeCollector) Probe(ctx context.Context, target map[string]string, hc *http.Client, savedConfig config.FortiExporterConfig) (bool, error) {
+func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *http.Client, savedConfig config.FortiExporterConfig) (bool, error) {
 	tgt, err := url.Parse(target["target"])
 	if err != nil {
 		return false, fmt.Errorf("url.Parse failed: %v", err)
 	}
 
 	if tgt.Scheme != "https" && tgt.Scheme != "http" {
-		return false, fmt.Errorf("Unsupported scheme %q", tgt.Scheme)
+		return false, fmt.Errorf("unsupported scheme %q", tgt.Scheme)
 	}
 
 	// Filter anything else than scheme and hostname
@@ -65,9 +79,11 @@ func (p *ProbeCollector) Probe(ctx context.Context, target map[string]string, hc
 
 	if target["token"] != "" && savedConfig.AuthKeys[config.Target(target["target"])].Token == "" {
 		// Add the target and its apikey to the savedConfig and use, if exists, a target entry as a template for include/exclude
-		// This will only happend the "first" time
-		savedConfig.AuthKeys[config.Target(target["target"])] = config.TargetAuth{Token: config.Token(target["token"]),
-			Probes: savedConfig.AuthKeys[config.Target(target["profile"])].Probes}
+		// This will only happened the "first" time
+		savedConfig.AuthKeys[config.Target(target["target"])] = config.TargetAuth{
+			Token:  config.Token(target["token"]),
+			Probes: savedConfig.AuthKeys[config.Target(target["profile"])].Probes,
+		}
 	}
 
 	c, err := fortiHTTP.NewFortiClient(ctx, u, hc, savedConfig)
@@ -122,21 +138,29 @@ func (p *ProbeCollector) Probe(ctx context.Context, target map[string]string, hc
 		{"BGP/Neighbors/IPv6", probeBGPNeighborsIPv6},
 		{"Firewall/LoadBalance", probeFirewallLoadBalance},
 		{"Firewall/Policies", probeFirewallPolicies},
-		{"Firewall/IpPool", probeFirewallIpPool},
+		{"Firewall/IPPool", probeFirewallIPPool},
 		{"License/Status", probeLicenseStatus},
 		{"Log/Fortianalyzer/Status", probeLogAnalyzer},
 		{"Log/Fortianalyzer/Queue", probeLogAnalyzerQueue},
 		{"Log/DiskUsage", probeLogCurrentDiskUsage},
+		{"Network/Dns/Latency", probeNetworkDNSLatency},
 		{"System/AvailableCertificates", probeSystemAvailableCertificates},
+		{"System/Central-Management/Status", probeSystemCentralManagementStatus},
 		{"System/Fortimanager/Status", probeSystemFortimanagerStatus},
+		{"System/Global/Location", probeSystemGlobalLocation},
 		{"System/HAStatistics", probeSystemHAStatistics},
+		{"System/Ha-peer", probeSystemHaPeer},
 		{"System/Interface", probeSystemInterface},
+		{"System/Interface/Transceivers", probeSystemInterfaceTransceivers},
 		{"System/LinkMonitor", probeSystemLinkMonitor},
+		{"System/Performance/Status", probeSystemPerformanceStatus},
+		{"System/Ntp/Status", probeSystemNtpStatus},
 		{"System/Resource/Usage", probeSystemResourceUsage},
+		{"System/Resource/Usage/VDOM", probeSystemResourceUsagePerVdom},
 		{"System/SDNConnector", probeSystemSDNConnector},
 		{"System/SensorInfo", probeSystemSensorInfo},
 		{"System/Status", probeSystemStatus},
-		{"System/VDOMResources", probeSystemVDOMResources},
+		{"System/VDOMResource", probeSystemVdomResource},
 		{"System/HAChecksum", probeSystemHAChecksum},
 		{"User/Fsso", probeUserFsso},
 		{"VPN/IPSec", probeVPNIPSec},
@@ -186,12 +210,12 @@ func (p *ProbeCollector) Probe(ctx context.Context, target map[string]string, hc
 	return success, nil
 }
 
-func (p *ProbeCollector) Collect(c chan<- prometheus.Metric) {
+func (p *Collector) Collect(c chan<- prometheus.Metric) {
 	// Collect result of new probe functions
 	for _, m := range p.metrics {
 		c <- m
 	}
 }
 
-func (p *ProbeCollector) Describe(c chan<- *prometheus.Desc) {
+func (p *Collector) Describe(_ chan<- *prometheus.Desc) {
 }
