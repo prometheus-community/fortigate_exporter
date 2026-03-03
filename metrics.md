@@ -4,6 +4,8 @@ Global:
 
  * _Network/Dns/Latency_
    * `fortigate_network_dns_latency_`
+ * _System/Global/Location_
+   * `fortigate_location_info`
  * _System/SensorInfo_
    * `fortigate_sensor_alarm_status`
    * `fortigate_sensor_fan_rpm`
@@ -12,6 +14,7 @@ Global:
    * `fortigate_sensor_thresholds`
  * _System/Status_
    * `fortigate_version_info`
+   * `fortigate_system_status_log_disk_state`
  * _System/Transceivers_
    * `fortigate_interface_transceivers`
  * _System/Time/Clock_
@@ -37,6 +40,9 @@ Global:
    * `fortigate_system_performance_status_mem_used_bytes`
  * _System/HAChecksums_
    * `fortigate_ha_member_has_role`
+ * _System/HAPeer_
+   * `fortigate_ha_peer_info`
+   * `fortigate_ha_peer_primary`
  * _System/Ntp/Status_
    * `fortigate_system_ntp_delay_seconds`
    * `fortigate_system_ntp_dispersion_seconds`
@@ -86,6 +92,7 @@ Per-VDOM:
  * _System/Interface/Transceivers_
    * `fortigate_inteface_transceivers_info`
  * _System/SDNConnector_
+   * `fortigate_system_sdn_connector_state`
    * `fortigate_system_sdn_connector_status`
    * `fortigate_system_sdn_connector_last_update_seconds`
  * _/System/CentralManagement/Status_
