@@ -4,6 +4,8 @@ Global:
 
  * _Network/Dns/Latency_
    * `fortigate_network_dns_latency_`
+ * _System/Global/Location_
+   * `fortigate_location_info`
  * _System/SensorInfo_
    * `fortigate_sensor_alarm_status`
    * `fortigate_sensor_fan_rpm`
@@ -12,6 +14,7 @@ Global:
    * `fortigate_sensor_thresholds`
  * _System/Status_
    * `fortigate_version_info`
+   * `fortigate_system_status_log_disk_state`
  * _System/Transceivers_
    * `fortigate_interface_transceivers`
  * _System/Time/Clock_
