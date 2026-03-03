@@ -19,7 +19,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type OSPFNeighbor struct {
@@ -35,7 +35,7 @@ type OSPFNeighborResponse struct {
 	Version string         `json:"version"`
 }
 
-func probeOSPFNeighbors(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeOSPFNeighbors(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	if meta.VersionMajor < 7 {
 		// not supported version. Before 7.0.0 the requested endpoint doesn't exist
 		return nil, true

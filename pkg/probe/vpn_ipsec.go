@@ -19,10 +19,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeVPNIPSec(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeVPNIPSec(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		status = prometheus.NewDesc(
 			"fortigate_ipsec_tunnel_up",
@@ -49,9 +49,10 @@ func probeVPNIPSec(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bo
 		Outgoing float64 `json:"outgoing_bytes"`
 	}
 	type tunnel struct {
-		Name    string    `json:"name"`
-		Type    string    `json:"type"`
-		ProxyID []proxyid `json:"proxyid"`
+		Name       string    `json:"name"`
+		Type       string    `json:"type"`
+		ProxyID    []proxyid `json:"proxyid"`
+		Connection int       `json:"connection_count"`
 	}
 	type ipsecResult struct {
 		Results []tunnel `json:"results"`

@@ -19,7 +19,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/prometheus-community/fortigate_exporter/internal/config"
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type VPNUser struct {
@@ -31,7 +31,7 @@ type VPNUsers struct {
 	VDOM    string    `json:"vdom"`
 }
 
-func probeVPNSsl(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeVPNSsl(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	savedConfig := config.GetConfig()
 	MaxVPNUsers := savedConfig.MaxVPNUsers
 

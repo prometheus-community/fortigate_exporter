@@ -18,7 +18,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type SystemSDNConnectorResults struct {
@@ -34,7 +34,7 @@ type SystemSDNConnector struct {
 	VDOM    string                      `json:"vdom"`
 }
 
-func probeSystemSDNConnector(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemSDNConnector(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		SDNConnectorsStatus = prometheus.NewDesc(
 			"fortigate_system_sdn_connector_status",

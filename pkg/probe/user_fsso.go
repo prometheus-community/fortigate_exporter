@@ -19,7 +19,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type UserFssoResults struct {
@@ -34,7 +34,7 @@ type UserFsso struct {
 	VDOM    string            `json:"vdom"`
 }
 
-func probeUserFsso(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeUserFsso(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	FssoUsers := prometheus.NewDesc(
 		"fortigate_user_fsso_info",
 		"Info on Fsso defined connectors",

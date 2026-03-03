@@ -18,7 +18,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type IPPool struct {
@@ -38,7 +38,7 @@ type IPPoolResponse struct {
 	Version string            `json:"version"`
 }
 
-func probeFirewallIPPool(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeFirewallIPPool(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	mAvailable := prometheus.NewDesc(
 		"fortigate_ippool_available_ratio",
 		"Percentage available in ippool (0 - 1.0)",

@@ -18,10 +18,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeNetworkDNSLatency(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeNetworkDNSLatency(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	dnsLatency := prometheus.NewDesc(
 		"fortigate_network_dns_latency_seconds",
 		"Network dns latency",
