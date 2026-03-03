@@ -18,7 +18,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type HAChecksumResults struct {
@@ -31,7 +31,7 @@ type HAChecksum struct {
 	Results []HAChecksumResults `json:"results"`
 }
 
-func probeSystemHAChecksum(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemHAChecksum(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	IsMaster := prometheus.NewDesc(
 		"fortigate_ha_member_has_role",
 		"Master/Slave information",

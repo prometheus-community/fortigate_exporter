@@ -18,10 +18,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeWifiClients(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeWifiClients(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		clientInfo = prometheus.NewDesc(
 			"fortigate_wifi_client_info",

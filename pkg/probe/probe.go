@@ -42,7 +42,7 @@ import (
 
 	"github.com/prometheus-community/fortigate_exporter/internal/config"
 	"github.com/prometheus-community/fortigate_exporter/internal/version"
-	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/http"
+	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type Collector struct {

@@ -19,10 +19,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeManagedSwitch(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		managedSwitchInfo = prometheus.NewDesc(
 			"fortigate_managed_switch_info",

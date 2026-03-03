@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// HTTP client for Fortigate API using token authentication
+// Tests of forti_token_client
 //
 // Copyright (C) 2020  Christian Svensson
 //
@@ -28,69 +28,58 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package http
+package fortigatehttpclient
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-
-	"github.com/prometheus-community/fortigate_exporter/internal/config"
+	"reflect"
+	"strings"
+	"testing"
 )
 
-type Client interface {
-	Do(req *http.Request) (*http.Response, error)
+type fakeClient struct {
+	status int
+	body   string
 }
 
-type fortiTokenClient struct {
-	tgt url.URL
-	hc  Client
-	ctx context.Context
-	tok config.Token
+func (c *fakeClient) Do(_ *http.Request) (*http.Response, error) {
+	return &http.Response{
+		Body:       io.NopCloser(strings.NewReader(c.body)),
+		StatusCode: c.status,
+	}, nil
 }
 
-func (c *fortiTokenClient) newGetRequest(url string) (*http.Request, error) {
-	r, err := http.NewRequestWithContext(c.ctx, "GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	r.Header.Add("Authorization", fmt.Sprintf("Bearer %s", c.tok))
-	return r, nil
+func newClient(sc int, b string) (*fortiTokenClient, error) {
+	return newFortiTokenClient(
+		context.Background(),
+		url.URL{Scheme: "https", Host: "localhost"},
+		&fakeClient{sc, b},
+		"TEST-TOKEN",
+	)
 }
 
-func (c *fortiTokenClient) Get(path, query string, obj any) error {
-	u := c.tgt
-	u.Path = path
-	u.RawQuery = query
-
-	req, err := c.newGetRequest(u.String())
-	if err != nil {
-		return err
+func TestGetParse(t *testing.T) {
+	c, _ := newClient(200, `{ "data": "test" }`)
+	type D struct {
+		Data string
 	}
-
-	req = req.WithContext(c.ctx)
-	resp, err := c.hc.Do(req)
-	if err != nil {
-		return err
+	var v D
+	exp := D{"test"}
+	if err := c.Get("test", "", &v); err != nil || !reflect.DeepEqual(v, exp) {
+		t.Errorf("Get() %v, %v, expected %v, nil", v, err, exp)
 	}
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("response code was %d, expected 200 (path: %q)", resp.StatusCode, path)
-	}
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(b, obj)
 }
 
-func (c *fortiTokenClient) String() string {
-	return c.tgt.String()
-}
-
-func newFortiTokenClient(ctx context.Context, tgt url.URL, hc Client, token config.Token) (*fortiTokenClient, error) {
-	return &fortiTokenClient{tgt, hc, ctx, token}, nil
+func TestGetFail(t *testing.T) {
+	c, _ := newClient(404, `{}`)
+	type D struct {
+		Data string
+	}
+	err := c.Get("test", "", &D{})
+	if err == nil {
+		t.Errorf("Get() expected non-nil error, got nil error")
+	}
 }

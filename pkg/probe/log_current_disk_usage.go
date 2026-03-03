@@ -18,7 +18,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type LogResults struct {
@@ -31,7 +31,7 @@ type Log struct {
 	VDOM    string     `json:"vdom"`
 }
 
-func probeLogCurrentDiskUsage(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeLogCurrentDiskUsage(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		logUsed = prometheus.NewDesc(
 			"fortigate_log_disk_used_bytes",
