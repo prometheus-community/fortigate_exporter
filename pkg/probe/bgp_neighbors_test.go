@@ -21,7 +21,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 )
 
-func TestBGPNeighborsIPv4Old(t *testing.T) {
+func TestBGPNeighborsIPv47_4(t *testing.T) {
 	c := newFakeClient()
 	c.prepare("api/v2/monitor/router/bgp/neighbors", "testdata/router-bgp-neighbors-v4-7.4.jsonnet")
 	r := prometheus.NewPedanticRegistry()
@@ -44,7 +44,7 @@ func TestBGPNeighborsIPv4Old(t *testing.T) {
 	}
 }
 
-func TestBGPNeighborsIPv6Old(t *testing.T) {
+func TestBGPNeighborsIPv67_4(t *testing.T) {
 	c := newFakeClient()
 	c.prepare("api/v2/monitor/router/bgp/neighbors6", "testdata/router-bgp-neighbors-v6-7.4.jsonnet")
 	r := prometheus.NewPedanticRegistry()
