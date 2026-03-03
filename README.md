@@ -182,6 +182,7 @@ To improve security, limit permissions to required ones only (least privilege pr
 |System/AvailableCertificates | *any*              |api/v2/monitor/system/available-certificates |
 |System/Central-management/Status | sysgrp.cfg         |api/v2/monitor/system/central-management/status|
 |System/Fortimanager/Status   | sysgrp.cfg         |api/v2/monitor/system/fortimanager/status |
+|System/Global/Location       | sysgrp.cfg         |api/v2/cmdb/system/global |
 |System/HAStatistics          | sysgrp.cfg         |api/v2/monitor/system/ha-statistics<br>api/v2/cmdb/system/ha |
 |System/Ha-peer               | sysgrp.cfg         |api/v2/monitor/system/ha-peer |
 |System/Interface             | netgrp.cfg         |api/v2/monitor/system/interface/select |
