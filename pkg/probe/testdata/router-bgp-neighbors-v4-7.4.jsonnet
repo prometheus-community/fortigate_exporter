@@ -6,26 +6,10 @@
       {
         "neighbor_ip":"10.0.0.1",
         "local_ip":"10.0.0.0",
-        "remote_as":"1337",
+        "remote_as":1337,
         "admin_status":true,
         "state":"Established",
         "type":"ipv4"
-      },
-      {
-        "neighbor_ip":"fd00::5",
-        "local_ip":"fd00::1",
-        "remote_as":"1337",
-        "admin_status":true,
-        "state":"Active",
-        "type":"ipv6"
-      },
-      {
-        "neighbor_ip":"fd00::7",
-        "local_ip":"fd00::1",
-        "remote_as":"1337",
-        "admin_status":true,
-        "state":"Connect",
-        "type":"ipv6"
       }
     ],
     "vdom":"root",

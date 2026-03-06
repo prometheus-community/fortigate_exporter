@@ -21,23 +21,18 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 )
 
-func TestSystemStatus(t *testing.T) {
+func TestSystemGlobalLocation(t *testing.T) {
 	c := newFakeClient()
-	c.prepare("api/v2/monitor/system/status", "testdata/status.jsonnet")
+	c.prepare("api/v2/cmdb/system/global", "testdata/system-global-location.jsonnet")
 	r := prometheus.NewPedanticRegistry()
-	if !testProbe(probeSystemStatus, c, r) {
-		t.Errorf("probeSystemStatus() returned non-success")
+	if !testProbe(probeSystemGlobalLocation, c, r) {
+		t.Errorf("probeSystemGlobalLocation() returned non-success")
 	}
 
 	em := `
-	# HELP fortigate_system_status_log_disk_state System log disk availability state
-	# TYPE fortigate_system_status_log_disk_state gauge
-	fortigate_system_status_log_disk_state{state="available"} 0
-	fortigate_system_status_log_disk_state{state="need_format"} 0
-	fortigate_system_status_log_disk_state{state="not_available"} 1
-	# HELP fortigate_version_info System version and build information
-	# TYPE fortigate_version_info gauge
-	fortigate_version_info{build="1112",hostname="fgt-test-1",model="F2K60F",model_name="FortiGate",model_number="2600F",serial="FGVMEVZFNTS3OAC8",version="v6.2.4"} 1
+	# HELP fortigate_location_info System geographic location (static metadata)
+	# TYPE fortigate_location_info gauge
+	fortigate_location_info{latitude="66.543508", longitude="25.8467468"} 1
 	`
 
 	if err := testutil.GatherAndCompare(r, strings.NewReader(em)); err != nil {

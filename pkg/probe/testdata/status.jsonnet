@@ -2,6 +2,11 @@
 {
   "http_method":"GET",
   "results":{
+    "model_name":"FortiGate",
+    "model_number":"2600F",
+    "model":"F2K60F",
+    "hostname":"fgt-test-1",
+    "log_disk_status":"not_available"
   },
   "vdom":"root",
   "path":"system",

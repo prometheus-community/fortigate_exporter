@@ -4,6 +4,8 @@ Global:
 
  * _Network/Dns/Latency_
    * `fortigate_network_dns_latency_`
+ * _System/Global/Location_
+   * `fortigate_location_info`
  * _System/SensorInfo_
    * `fortigate_sensor_alarm_status`
    * `fortigate_sensor_fan_rpm`
@@ -12,6 +14,7 @@ Global:
    * `fortigate_sensor_thresholds`
  * _System/Status_
    * `fortigate_version_info`
+   * `fortigate_system_status_log_disk_state`
  * _System/Transceivers_
    * `fortigate_interface_transceivers`
  * _System/Time/Clock_
@@ -89,6 +92,7 @@ Per-VDOM:
  * _System/Interface/Transceivers_
    * `fortigate_inteface_transceivers_info`
  * _System/SDNConnector_
+   * `fortigate_system_sdn_connector_state`
    * `fortigate_system_sdn_connector_status`
    * `fortigate_system_sdn_connector_last_update_seconds`
  * _/System/CentralManagement/Status_
@@ -178,8 +182,10 @@ Per-VDOM:
  Per-BGP-Neighbor and VDOM:
  * _BGP/Neighbors/IPv4_
    * `fortigate_bgp_neighbor_ipv4_info`
+   * `fortigate_bgp_neighbor_ipv4_state`
  * _BGP/Neighbors/IPv6_
    * `fortigate_bgp_neighbor_ipv6_info`
+   * `fortigate_bgp_neighbor_ipv6_state`
  * _BGP/NeighborPaths/IPv4_
    * `fortigate_bgp_neighbor_ipv4_paths`
    * `fortigate_bgp_neighbor_ipv4_best_paths`
