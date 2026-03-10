@@ -18,10 +18,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeSystemHAStatistics(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemHAStatistics(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		memberInfo = prometheus.NewDesc(
 			"fortigate_ha_member_info",

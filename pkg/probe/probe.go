@@ -42,7 +42,7 @@ import (
 
 	"github.com/prometheus-community/fortigate_exporter/internal/config"
 	"github.com/prometheus-community/fortigate_exporter/internal/version"
-	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/http"
+	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type Collector struct {
@@ -147,6 +147,7 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		{"System/AvailableCertificates", probeSystemAvailableCertificates},
 		{"System/Central-Management/Status", probeSystemCentralManagementStatus},
 		{"System/Fortimanager/Status", probeSystemFortimanagerStatus},
+		{"System/Global/Location", probeSystemGlobalLocation},
 		{"System/HAStatistics", probeSystemHAStatistics},
 		{"System/Ha-peer", probeSystemHaPeer},
 		{"System/Interface", probeSystemInterface},

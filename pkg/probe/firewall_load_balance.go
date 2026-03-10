@@ -20,10 +20,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeFirewallLoadBalance(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeFirewallLoadBalance(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	if meta.VersionMajor < 6 || (meta.VersionMajor == 6 && meta.VersionMinor < 4) {
 		// not supported version. Before 6.4.0 there is no real_server_id and therefore this will fail
 		return nil, true

@@ -18,7 +18,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type LogAnaQueueResults struct {
@@ -32,7 +32,7 @@ type LogAnaQueue struct {
 	VDOM    string             `json:"vdom"`
 }
 
-func probeLogAnalyzerQueue(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeLogAnalyzerQueue(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		logAnaConn = prometheus.NewDesc(
 			"fortigate_log_fortianalyzer_queue_connections",

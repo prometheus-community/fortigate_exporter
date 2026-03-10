@@ -42,7 +42,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/prometheus-community/fortigate_exporter/internal/config"
-	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/http"
+	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 	"github.com/prometheus-community/fortigate_exporter/pkg/probe"
 )
 

@@ -19,10 +19,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeSystemPerformanceStatus(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemPerformanceStatus(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		cpuCoresUser = prometheus.NewDesc(
 			"fortigate_system_performance_status_cpu_cores_user_ratio",

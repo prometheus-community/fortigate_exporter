@@ -18,10 +18,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeSystemVdomResource(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemVdomResource(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	vdomDesc := make(map[string]*prometheus.Desc)
 	vdomDesc["cpu"] = prometheus.NewDesc(
 		"fortigate_vdom_resource_cpu_usage_ratio",

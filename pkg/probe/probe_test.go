@@ -38,7 +38,7 @@ import (
 	"github.com/google/go-jsonnet"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type preparedResp struct {
@@ -105,7 +105,7 @@ func (p *testCollector) Collect(c chan<- prometheus.Metric) {
 func (p *testCollector) Describe(_ chan<- *prometheus.Desc) {
 }
 
-func testProbe(pf probeFunc, c http.FortiHTTP, r Registry) bool {
+func testProbe(pf probeFunc, c fortigatehttpclient.FortiHTTP, r Registry) bool {
 	meta := &TargetMetadata{
 		VersionMajor: 7,
 		VersionMinor: 4,
@@ -113,7 +113,7 @@ func testProbe(pf probeFunc, c http.FortiHTTP, r Registry) bool {
 	return testProbeWithMetadata(pf, c, meta, r)
 }
 
-func testProbeWithMetadata(pf probeFunc, c http.FortiHTTP, meta *TargetMetadata, r Registry) bool {
+func testProbeWithMetadata(pf probeFunc, c fortigatehttpclient.FortiHTTP, meta *TargetMetadata, r Registry) bool {
 	m, ok := pf(c, meta)
 	if !ok {
 		return false

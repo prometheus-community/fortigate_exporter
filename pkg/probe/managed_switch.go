@@ -19,10 +19,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeManagedSwitch(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		managedSwitchInfo = prometheus.NewDesc(
 			"fortigate_managed_switch_info",
@@ -235,7 +235,7 @@ func probeManagedSwitch(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metri
 
 	// Consider implementing pagination to remove this limit of 1000 entries
 	var response managedResponse
-	if err := c.Get("api/v2/monitor/switch-controller/managed-switch", "vdom=*&start=0&poe=true&port_stats=true&transceiver=true&count=1000", &response); err != nil {
+	if err := c.Get("api/v2/monitor/switch-controller/managed-switch/status", "vdom=*&start=0&poe=true&port_stats=true&transceiver=true&count=1000", &response); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false
 	}
