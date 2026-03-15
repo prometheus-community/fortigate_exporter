@@ -19,11 +19,11 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/internal/version"
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/internal/fortiversion"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeFirewallPolicies(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeFirewallPolicies(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		mHitCount = prometheus.NewDesc(
 			"fortigate_policy_hit_count_total",
@@ -81,7 +81,7 @@ func probeFirewallPolicies(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Me
 	}
 
 	combined := false
-	major, minor, ok := version.ParseVersion(ps4[0].Version)
+	major, minor, ok := fortiversion.ParseVersion(ps4[0].Version)
 	if !ok {
 		log.Printf("Could not parse version number %q", ps4[0].Version)
 		return nil, false

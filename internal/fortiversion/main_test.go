@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Tests of forti_token_client
+// Tests of version parsing
 //
 // Copyright (C) 2020  Christian Svensson
 //
@@ -28,58 +28,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package http
+package fortiversion
 
 import (
-	"context"
-	"io"
-	"net/http"
-	"net/url"
-	"reflect"
-	"strings"
 	"testing"
 )
 
-type fakeClient struct {
-	status int
-	body   string
-}
-
-func (c *fakeClient) Do(_ *http.Request) (*http.Response, error) {
-	return &http.Response{
-		Body:       io.NopCloser(strings.NewReader(c.body)),
-		StatusCode: c.status,
-	}, nil
-}
-
-func newClient(sc int, b string) (*fortiTokenClient, error) {
-	return newFortiTokenClient(
-		context.Background(),
-		url.URL{Scheme: "https", Host: "localhost"},
-		&fakeClient{sc, b},
-		"TEST-TOKEN",
-	)
-}
-
-func TestGetParse(t *testing.T) {
-	c, _ := newClient(200, `{ "data": "test" }`)
-	type D struct {
-		Data string
-	}
-	var v D
-	exp := D{"test"}
-	if err := c.Get("test", "", &v); err != nil || !reflect.DeepEqual(v, exp) {
-		t.Errorf("Get() %v, %v, expected %v, nil", v, err, exp)
-	}
-}
-
-func TestGetFail(t *testing.T) {
-	c, _ := newClient(404, `{}`)
-	type D struct {
-		Data string
-	}
-	err := c.Get("test", "", &D{})
-	if err == nil {
-		t.Errorf("Get() expected non-nil error, got nil error")
+func TestVersionParseOK(t *testing.T) {
+	for _, tv := range []struct {
+		v     string
+		major int
+		minor int
+		ok    bool
+	}{
+		{v: "v6.4.4", major: 6, minor: 4, ok: true},
+		{v: "1.0.0", ok: false},
+	} {
+		t.Run(tv.v, func(t *testing.T) {
+			major, minor, ok := ParseVersion(tv.v)
+			if !tv.ok {
+				if ok {
+					t.Errorf("Expected %q to fail to parse, succeeded", tv.v)
+				}
+				return
+			}
+			if major != tv.major || minor != tv.minor {
+				t.Errorf("Expected %q to be (%d, %d), was (%d, %d)", tv.v, tv.major, tv.minor, major, minor)
+			}
+		})
 	}
 }

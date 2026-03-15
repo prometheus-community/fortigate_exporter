@@ -19,10 +19,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeSystemResourceUsage(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemResourceUsage(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		mResCPU = prometheus.NewDesc(
 			"fortigate_cpu_usage_ratio",
@@ -84,7 +84,7 @@ func probeSystemResourceUsage(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus
 	return m, true
 }
 
-func probeSystemResourceUsagePerVdom(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemResourceUsagePerVdom(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		mResCPU = prometheus.NewDesc(
 			"fortigate_vdom_cpu_usage_ratio",

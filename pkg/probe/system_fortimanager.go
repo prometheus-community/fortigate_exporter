@@ -18,7 +18,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type SystemFortimanagerResults struct {
@@ -32,7 +32,7 @@ type SystemFortimanagerStatus struct {
 	VDOM    string                    `json:"vdom"`
 }
 
-func probeSystemFortimanagerStatus(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeSystemFortimanagerStatus(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		FortimanStatID = prometheus.NewDesc(
 			"fortigate_fortimanager_connection_status",

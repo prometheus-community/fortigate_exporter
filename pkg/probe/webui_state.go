@@ -18,10 +18,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeWebUIState(c http.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeWebUIState(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		mRebootTime = prometheus.NewDesc(
 			"fortigate_last_reboot_seconds",

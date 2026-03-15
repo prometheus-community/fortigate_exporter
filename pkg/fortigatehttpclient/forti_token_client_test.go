@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Parse Fortigate version numbers
+// Tests of forti_token_client
 //
 // Copyright (C) 2020  Christian Svensson
 //
@@ -28,21 +28,58 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package version
+package fortigatehttpclient
 
 import (
-	"fmt"
+	"context"
+	"io"
+	"net/http"
+	"net/url"
+	"reflect"
+	"strings"
+	"testing"
 )
 
-func ParseVersion(ver string) (int, int, bool) {
-	var minor int
-	var major int
-	n, err := fmt.Sscanf(ver, "v%d.%d.", &major, &minor)
-	if err != nil {
-		return 0, 0, false
+type fakeClient struct {
+	status int
+	body   string
+}
+
+func (c *fakeClient) Do(_ *http.Request) (*http.Response, error) {
+	return &http.Response{
+		Body:       io.NopCloser(strings.NewReader(c.body)),
+		StatusCode: c.status,
+	}, nil
+}
+
+func newClient(sc int, b string) (*fortiTokenClient, error) {
+	return newFortiTokenClient(
+		context.Background(),
+		url.URL{Scheme: "https", Host: "localhost"},
+		&fakeClient{sc, b},
+		"TEST-TOKEN",
+	)
+}
+
+func TestGetParse(t *testing.T) {
+	c, _ := newClient(200, `{ "data": "test" }`)
+	type D struct {
+		Data string
 	}
-	if n != 2 {
-		return 0, 0, false
+	var v D
+	exp := D{"test"}
+	if err := c.Get("test", "", &v); err != nil || !reflect.DeepEqual(v, exp) {
+		t.Errorf("Get() %v, %v, expected %v, nil", v, err, exp)
 	}
-	return major, minor, true
+}
+
+func TestGetFail(t *testing.T) {
+	c, _ := newClient(404, `{}`)
+	type D struct {
+		Data string
+	}
+	err := c.Get("test", "", &D{})
+	if err == nil {
+		t.Errorf("Get() expected non-nil error, got nil error")
+	}
 }

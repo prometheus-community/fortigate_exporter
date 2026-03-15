@@ -20,7 +20,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/prometheus-community/fortigate_exporter/internal/config"
-	"github.com/prometheus-community/fortigate_exporter/pkg/http"
+	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
 type BGPPath struct {
@@ -39,7 +39,7 @@ type PathCount struct {
 	VDOM   string
 }
 
-func probeBGPNeighborPathsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeBGPNeighborPathsIPv4(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	savedConfig := config.GetConfig()
 	MaxBGPPaths := savedConfig.MaxBGPPaths
 
@@ -107,7 +107,7 @@ func probeBGPNeighborPathsIPv4(c http.FortiHTTP, meta *TargetMetadata) ([]promet
 	return m, true
 }
 
-func probeBGPNeighborPathsIPv6(c http.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeBGPNeighborPathsIPv6(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	savedConfig := config.GetConfig()
 	MaxBGPPaths := savedConfig.MaxBGPPaths
 

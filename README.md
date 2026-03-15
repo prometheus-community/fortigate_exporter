@@ -9,10 +9,6 @@ Prometheus exporter for FortiGate® firewalls.
 
 ---
 
-**This repository is archived due to lack of time from the maintainer, as well as lack of support from Fortinet to provide documentation. The constant fight to reverse engineer the APIs for new versions takes too much time for a few developers. Feel free to fork this project and continue the work!**
-
----
-
 **NOTE:** This is not an official Fortinet product, it is developed fully independently by professionals and hobbyists alike.
 
   * [Supported Metrics](#supported-metrics)
@@ -182,6 +178,7 @@ To improve security, limit permissions to required ones only (least privilege pr
 |System/AvailableCertificates | *any*              |api/v2/monitor/system/available-certificates |
 |System/Central-management/Status | sysgrp.cfg         |api/v2/monitor/system/central-management/status|
 |System/Fortimanager/Status   | sysgrp.cfg         |api/v2/monitor/system/fortimanager/status |
+|System/Global/Location       | sysgrp.cfg         |api/v2/cmdb/system/global |
 |System/HAStatistics          | sysgrp.cfg         |api/v2/monitor/system/ha-statistics<br>api/v2/cmdb/system/ha |
 |System/Ha-peer               | sysgrp.cfg         |api/v2/monitor/system/ha-peer |
 |System/Interface             | netgrp.cfg         |api/v2/monitor/system/interface/select |
