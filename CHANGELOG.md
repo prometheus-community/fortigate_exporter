@@ -1,4 +1,4 @@
-## v1.25.1 / 2026-03-15
+## v1.25.0 / 2026-03-15
 
 First release after the move to the prometheus-community
 
