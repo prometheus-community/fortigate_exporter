@@ -1,22 +1,21 @@
 name: CI
 
 on:
-  push:
-    tags:
-      - 'v*'
-    branches:
-      - main
   pull_request:
-  workflow_call:
+  push:
+    branches: [main, 'release-*']
+    tags: ['v*']
 
 jobs:
   build:
     name: Build for common architectures
     runs-on: ubuntu-latest
     if: |
-      !(github.event_name == 'push' && github.event.ref == 'refs/heads/main')
-      &&
       !(github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+      &&
+      !(github.event_name == 'pull_request' && startsWith(github.event.pull_request.base.ref, 'release-'))
+      &&
+      !(github.event_name == 'push' && github.event.ref == 'refs/heads/main')
     strategy:
       matrix:
         thread: [ 0, 1, 2 ]
@@ -33,9 +32,11 @@ jobs:
     name: Build for all architectures
     runs-on: ubuntu-latest
     if: |
-      (github.event_name == 'push' && github.event.ref == 'refs/heads/main')
-      ||
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+      ||
+      (github.event_name == 'pull_request' && startsWith(github.event.pull_request.base.ref, 'release-'))
+      ||
+      (github.event_name == 'push' && github.event.ref == 'refs/heads/main')
     strategy:
       matrix:
         thread: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ]
@@ -51,7 +52,7 @@ jobs:
     name: Verify
     runs-on: ubuntu-latest
     container:
-      image: quay.io/prometheus/golang-builder:1.25-base
+      image: quay.io/prometheus/golang-builder:1.26-base
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - run: make build
