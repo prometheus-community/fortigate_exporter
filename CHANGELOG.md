@@ -3,14 +3,14 @@
 First release after the move to the prometheus-community
 
 > [!CAUTION]
-> [BREAKINGCHANGE] Rewrite BGP probes to use Prometheus state sets instead of numeric values for FortiOS 7.6 (#366)
+> [**BREAKINGCHANGE**] Rewrite BGP probes to use Prometheus state sets instead of numeric values for FortiOS 7.6 (#366)
 > this one will **REPLACE** the exisisting `fortigate_bgp_neighbor_ipv(4|6)_info` metric to a stateset `fortigate_bgp_neighbor_ipv(4|6)_state` impacting cardinality by +17 per bgp neighbor
 
 > [!IMPORTANT]
 > [CHANGE] Rewrite SDN Connector Status probe to use Prometheus state sets (#368)
-> this one will **ADD** a stateset fortigate_system_sdn_connector_state impacing cardinality by +5 per sdn connector. 
+> this one will **ADD** a stateset `fortigate_system_sdn_connector_state` impacing cardinality by +5 per sdn connector. 
 > 
-> **We are planning to deprecate fortigate_system_sdn_connector_status in a future release**
+> **We are planning to deprecate `fortigate_system_sdn_connector_status` in a future release**
 
 - [CHANGE] Rename internal version package (#375)
 - [CHANGE] Rename internal HTTP client package (#371)
