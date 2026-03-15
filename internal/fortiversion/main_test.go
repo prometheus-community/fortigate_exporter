@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Parse Fortigate version numbers
+// Tests of version parsing
 //
 // Copyright (C) 2020  Christian Svensson
 //
@@ -28,21 +28,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package version
+package fortiversion
 
 import (
-	"fmt"
+	"testing"
 )
 
-func ParseVersion(ver string) (int, int, bool) {
-	var minor int
-	var major int
-	n, err := fmt.Sscanf(ver, "v%d.%d.", &major, &minor)
-	if err != nil {
-		return 0, 0, false
+func TestVersionParseOK(t *testing.T) {
+	for _, tv := range []struct {
+		v     string
+		major int
+		minor int
+		ok    bool
+	}{
+		{v: "v6.4.4", major: 6, minor: 4, ok: true},
+		{v: "1.0.0", ok: false},
+	} {
+		t.Run(tv.v, func(t *testing.T) {
+			major, minor, ok := ParseVersion(tv.v)
+			if !tv.ok {
+				if ok {
+					t.Errorf("Expected %q to fail to parse, succeeded", tv.v)
+				}
+				return
+			}
+			if major != tv.major || minor != tv.minor {
+				t.Errorf("Expected %q to be (%d, %d), was (%d, %d)", tv.v, tv.major, tv.minor, major, minor)
+			}
+		})
 	}
-	if n != 2 {
-		return 0, 0, false
-	}
-	return major, minor, true
 }

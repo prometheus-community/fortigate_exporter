@@ -41,7 +41,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/prometheus-community/fortigate_exporter/internal/config"
-	"github.com/prometheus-community/fortigate_exporter/internal/version"
+	"github.com/prometheus-community/fortigate_exporter/internal/fortiversion"
 	fortiHTTP "github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
@@ -110,7 +110,7 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		return false, nil
 	}
 
-	major, minor, ok := version.ParseVersion(st.Version)
+	major, minor, ok := fortiversion.ParseVersion(st.Version)
 	if !ok {
 		log.Printf("Error: Failed to parse OS version: %q", st.Version)
 		return false, nil
