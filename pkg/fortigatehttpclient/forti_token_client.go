@@ -76,6 +76,7 @@ func (c *fortiTokenClient) Get(path, query string, obj any) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		return fmt.Errorf("response code was %d, expected 200 (path: %q)", resp.StatusCode, path)
 	}
