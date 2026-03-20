@@ -19,11 +19,10 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/prometheus-community/fortigate_exporter/internal/fortiversion"
 	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeFirewallPolicies(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeFirewallPolicies(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		mHitCount = prometheus.NewDesc(
 			"fortigate_policy_hit_count_total",
@@ -80,16 +79,8 @@ func probeFirewallPolicies(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) (
 		return nil, false
 	}
 
-	combined := false
-	major, minor, ok := fortiversion.ParseVersion(ps4[0].Version)
-	if !ok {
-		log.Printf("Could not parse version number %q", ps4[0].Version)
-		return nil, false
-	}
 	// If we are at 6.4 or later we use combined policies
-	if major > 6 || (major == 6 && minor >= 4) {
-		combined = true
-	}
+	combined := meta.VersionMajor > 6 || (meta.VersionMajor == 6 && meta.VersionMinor >= 4)
 
 	if !combined {
 		if err := c.Get("api/v2/monitor/firewall/policy6/select", "vdom=*", &ps6); err != nil {
