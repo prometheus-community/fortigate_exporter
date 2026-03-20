@@ -61,7 +61,7 @@ func probeSystemHaPeer(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) ([
 	}
 	m := []prometheus.Metric{}
 	for _, r := range res.Result {
-		if meta.VersionMajor >= 7 && meta.VersionMinor >= 4 {
+		if meta.VersionMajor > 7 || (meta.VersionMajor == 7 && meta.VersionMinor >= 4) {
 			m = append(m, prometheus.MustNewConstMetric(info, prometheus.GaugeValue, 1, r.Serial, strconv.FormatInt(r.Vcluster, 10), r.Hostname, strconv.FormatFloat(r.Priority, 'f', -1, 64)))
 			if r.Primary {
 				m = append(m, prometheus.MustNewConstMetric(primary, prometheus.GaugeValue, 1, strconv.FormatInt(r.Vcluster, 10), r.Hostname))
