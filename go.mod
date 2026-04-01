@@ -3,7 +3,7 @@ module github.com/prometheus-community/fortigate_exporter
 go 1.25.0
 
 require (
-	github.com/google/go-jsonnet v0.21.0
+	github.com/google/go-jsonnet v0.22.0
 	github.com/prometheus/client_golang v1.23.2
 	go.yaml.in/yaml/v2 v2.4.4
 )
