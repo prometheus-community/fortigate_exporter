@@ -2,7 +2,7 @@
 
 ![Go](https://github.com/prometheus-community/fortigate_exporter/workflows/Go/badge.svg)
 ![Docker](https://github.com/prometheus-community/fortigate_exporter/workflows/Docker/badge.svg)
-[![Docker Repository on Quay](https://quay.io/repository/prometheuscommunity/fortigate_exporter/status "Docker Repository on Quay")](https://quay.io/repository/prometheuscommunity/fortigate_exporter)
+[![Docker Repository on Quay](https://quay.io/repository/prometheuscommunity/fortigate-exporter/status "Docker Repository on Quay")](https://quay.io/repository/prometheuscommunity/fortigate-exporter)
 [![Matrix](https://img.shields.io/matrix/fortigate_exporter:matrix.org)](https://matrix.to/#/#fortigate_exporter:matrix.org)
 
 Prometheus exporter for FortiGate® firewalls.
@@ -38,7 +38,7 @@ Example:
 ```
 $ ./fortigate_exporter -auth-file ~/fortigate-key.yaml
 # or
-$ docker run -d -p 9710:9710 -v /path/to/fortigate-key.yaml:/config/fortigate-key.yaml quay.io/prometheuscommunity/fortigate_exporter:master
+$ docker run -d -p 9710:9710 -v /path/to/fortigate-key.yaml:/config/fortigate-key.yaml quay.io/prometheuscommunity/fortigate-exporter:main-distroless
 ```
 
 Where `fortigate-key.yaml` contains pairs of FortiGate targets and API keys in the following format:
