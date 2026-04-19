@@ -24,8 +24,12 @@ import (
 func TestProbeManagedSwitch(t *testing.T) {
 	c := newFakeClient()
 	c.prepare("api/v2/monitor/switch-controller/managed-switch/status", "testdata/managed-switch.jsonnet")
+	meta := &TargetMetadata{
+		VersionMajor: 6,
+		VersionMinor: 4,
+	}
 	r := prometheus.NewPedanticRegistry()
-	if !testProbe(probeManagedSwitch, c, r) {
+	if !testProbeWithMetadata(probeManagedSwitch, c, meta, r) {
 		t.Errorf("probeManagedSwitchStatus() returned non-success")
 	}
 
@@ -838,6 +842,136 @@ func TestProbeManagedSwitch(t *testing.T) {
 		fortigate_managed_switch_under_size_total{port="port7",switch_name="FOO-SW-01",vdom="root"} 0
 		fortigate_managed_switch_under_size_total{port="port8",switch_name="FOO-SW-01",vdom="root"} 0
 		fortigate_managed_switch_under_size_total{port="port9",switch_name="FOO-SW-01",vdom="root"} 0
+		`
+
+	if err := testutil.GatherAndCompare(r, strings.NewReader(em)); err != nil {
+		t.Fatalf("metric compare: err %v", err)
+	}
+}
+
+func TestProbeManagedSwitchFortiOS74(t *testing.T) {
+	c := newFakeClient()
+	c.prepare("api/v2/monitor/switch-controller/managed-switch/status", "testdata/managed-switch-74.jsonnet")
+	meta := &TargetMetadata{
+		VersionMajor: 7,
+		VersionMinor: 4,
+	}
+	r := prometheus.NewPedanticRegistry()
+	if !testProbeWithMetadata(probeManagedSwitch, c, meta, r) {
+		t.Errorf("probeManagedSwitch() returned non-success")
+	}
+
+	em := `
+		# HELP fortigate_managed_switch_collisions_total Total number of collisions
+		# TYPE fortigate_managed_switch_collisions_total counter
+		fortigate_managed_switch_collisions_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_collisions_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_crc_alignments_total Total number of crc alignments
+		# TYPE fortigate_managed_switch_crc_alignments_total counter
+		fortigate_managed_switch_crc_alignments_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_crc_alignments_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_fragments_total Total number of fragments
+		# TYPE fortigate_managed_switch_fragments_total counter
+		fortigate_managed_switch_fragments_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_fragments_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_info Infos about a managed switch
+		# TYPE fortigate_managed_switch_info counter
+		fortigate_managed_switch_info{os_version="S124EF-v7.4.11-build2878 (GA)",serial="S124EF5920010261",state="Authorized",status="Connected",switch_name="FOO-SW-74",vdom="root"} 1
+		# HELP fortigate_managed_switch_jabbers_total Total number of jabbers
+		# TYPE fortigate_managed_switch_jabbers_total counter
+		fortigate_managed_switch_jabbers_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_jabbers_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_l3_packets_total Total number of l3 packets
+		# TYPE fortigate_managed_switch_l3_packets_total counter
+		fortigate_managed_switch_l3_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_l3_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_max_poe_budget_watt Max poe budget watt
+		# TYPE fortigate_managed_switch_max_poe_budget_watt counter
+		fortigate_managed_switch_max_poe_budget_watt{switch_name="FOO-SW-74",vdom="root"} 370
+		# HELP fortigate_managed_switch_port_info Infos about a switch port
+		# TYPE fortigate_managed_switch_port_info gauge
+		fortigate_managed_switch_port_info{duplex="",poe_capable="false",poe_status="",port="port2",status="down",switch_name="FOO-SW-74",vdom="root",vlan="VLAN-101"} 1
+		fortigate_managed_switch_port_info{duplex="full",poe_capable="true",poe_status="enabled",port="port1",status="up",switch_name="FOO-SW-74",vdom="root",vlan="VLAN-4001"} 1
+		# HELP fortigate_managed_switch_port_power_status Port power status
+		# TYPE fortigate_managed_switch_port_power_status gauge
+		fortigate_managed_switch_port_power_status{port="port1",switch_name="FOO-SW-74",vdom="root"} 2
+		fortigate_managed_switch_port_power_status{port="port2",switch_name="FOO-SW-74",vdom="root"} 1
+		# HELP fortigate_managed_switch_port_power_watt Port power in watt
+		# TYPE fortigate_managed_switch_port_power_watt gauge
+		fortigate_managed_switch_port_power_watt{port="port1",switch_name="FOO-SW-74",vdom="root"} 6
+		fortigate_managed_switch_port_power_watt{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_port_status Port status up=1 down=0
+		# TYPE fortigate_managed_switch_port_status gauge
+		fortigate_managed_switch_port_status{port="port1",switch_name="FOO-SW-74",vdom="root"} 1
+		fortigate_managed_switch_port_status{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_rx_bcast_packets_total Total number of received broadcast packets
+		# TYPE fortigate_managed_switch_rx_bcast_packets_total counter
+		fortigate_managed_switch_rx_bcast_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 1
+		fortigate_managed_switch_rx_bcast_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_rx_bytes_total Total number of received bytes
+		# TYPE fortigate_managed_switch_rx_bytes_total counter
+		fortigate_managed_switch_rx_bytes_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 2000
+		fortigate_managed_switch_rx_bytes_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_rx_drops_total Total number of received drops
+		# TYPE fortigate_managed_switch_rx_drops_total counter
+		fortigate_managed_switch_rx_drops_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_rx_drops_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_rx_errors_total Total number of received errors
+		# TYPE fortigate_managed_switch_rx_errors_total counter
+		fortigate_managed_switch_rx_errors_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_rx_errors_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_rx_mcast_packets_total Total number of received multicast packets
+		# TYPE fortigate_managed_switch_rx_mcast_packets_total counter
+		fortigate_managed_switch_rx_mcast_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 1
+		fortigate_managed_switch_rx_mcast_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_rx_oversize_total Total number of received oversize
+		# TYPE fortigate_managed_switch_rx_oversize_total counter
+		fortigate_managed_switch_rx_oversize_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_rx_oversize_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_rx_packets_total Total number of received packets
+		# TYPE fortigate_managed_switch_rx_packets_total counter
+		fortigate_managed_switch_rx_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 20
+		fortigate_managed_switch_rx_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_rx_ucast_packets_total Total number of received unicast packets
+		# TYPE fortigate_managed_switch_rx_ucast_packets_total counter
+		fortigate_managed_switch_rx_ucast_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 18
+		fortigate_managed_switch_rx_ucast_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_tx_bcast_packets_total Total number of transmitted broadcast packets
+		# TYPE fortigate_managed_switch_tx_bcast_packets_total counter
+		fortigate_managed_switch_tx_bcast_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 1
+		fortigate_managed_switch_tx_bcast_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_tx_bytes_total Total number of transmitted bytes
+		# TYPE fortigate_managed_switch_tx_bytes_total counter
+		fortigate_managed_switch_tx_bytes_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 1000
+		fortigate_managed_switch_tx_bytes_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_tx_drops_total Total number of transmitted drops
+		# TYPE fortigate_managed_switch_tx_drops_total counter
+		fortigate_managed_switch_tx_drops_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_tx_drops_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_tx_errors_total Total number of transmitted errors
+		# TYPE fortigate_managed_switch_tx_errors_total counter
+		fortigate_managed_switch_tx_errors_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_tx_errors_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_tx_mcast_packets_total Total number of transmitted multicast packets
+		# TYPE fortigate_managed_switch_tx_mcast_packets_total counter
+		fortigate_managed_switch_tx_mcast_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 1
+		fortigate_managed_switch_tx_mcast_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_tx_oversize_total Total number of transmitted oversize
+		# TYPE fortigate_managed_switch_tx_oversize_total counter
+		fortigate_managed_switch_tx_oversize_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_tx_oversize_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_tx_packets_total Total number of transmitted packets
+		# TYPE fortigate_managed_switch_tx_packets_total counter
+		fortigate_managed_switch_tx_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 10
+		fortigate_managed_switch_tx_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_tx_ucast_packets_total Total number of transmitted unicast packets
+		# TYPE fortigate_managed_switch_tx_ucast_packets_total counter
+		fortigate_managed_switch_tx_ucast_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 8
+		fortigate_managed_switch_tx_ucast_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_under_size_total Total number of under size
+		# TYPE fortigate_managed_switch_under_size_total counter
+		fortigate_managed_switch_under_size_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
+		fortigate_managed_switch_under_size_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
 		`
 
 	if err := testutil.GatherAndCompare(r, strings.NewReader(em)); err != nil {
