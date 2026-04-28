@@ -88,7 +88,7 @@ func probeSystemNtpStatus(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata)
 	}
 
 	m := []prometheus.Metric{}
-	if meta.VersionMajor >= 7 && meta.VersionMinor >= 4 {
+	if meta.VersionMajor > 7 || (meta.VersionMajor == 7 && meta.VersionMinor >= 4) {
 		for _, res := range result {
 			for _, r := range res.Results {
 				m = append(m, prometheus.MustNewConstMetric(ntpExpires, prometheus.GaugeValue, float64(r.Expires), r.IP, r.Server, strconv.FormatBool(r.Reachable), strconv.FormatBool(r.Reachable), strconv.Itoa(r.Version), res.VDOM))

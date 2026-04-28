@@ -270,82 +270,82 @@ func TestVdomResource(t *testing.T) {
 	fortigate_vdom_resource_object_guaranteed{object="user",vdom="kalle-test"} 0
 	fortigate_vdom_resource_object_guaranteed{object="user-group",vdom="gur-proddmzext"} 0
 	fortigate_vdom_resource_object_guaranteed{object="user-group",vdom="kalle-test"} 0
-	# HELP fortigate_vdom_resource_object_guaranteed_max_value Object Minimum guaranteed value
-	# TYPE fortigate_vdom_resource_object_guaranteed_max_value gauge
-	fortigate_vdom_resource_object_guaranteed_max_value{object="custom-service",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="custom-service",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="dialup-tunnel",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="dialup-tunnel",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-address",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-address",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-addrgrp",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-addrgrp",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-policy",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-policy",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase1",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase1",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase1-interface",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase1-interface",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase2",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase2",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase2-interface",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase2-interface",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="log-disk-quota",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="log-disk-quota",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="onetime-schedule",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="onetime-schedule",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="proxy",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="proxy",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="recurring-schedule",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="recurring-schedule",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="service-group",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="service-group",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="session",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="session",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="sslvpn",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="sslvpn",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="user",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="user",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="user-group",vdom="gur-proddmzext"} 0
-	fortigate_vdom_resource_object_guaranteed_max_value{object="user-group",vdom="kalle-test"} 0
-	# HELP fortigate_vdom_resource_object_guaranteed_min_value Object Maximum guaranteed value
+	# HELP fortigate_vdom_resource_object_guaranteed_min_value Object Minimum guaranteed value
 	# TYPE fortigate_vdom_resource_object_guaranteed_min_value gauge
-	fortigate_vdom_resource_object_guaranteed_min_value{object="custom-service",vdom="gur-proddmzext"} 10240
-	fortigate_vdom_resource_object_guaranteed_min_value{object="custom-service",vdom="kalle-test"} 10240
+	fortigate_vdom_resource_object_guaranteed_min_value{object="custom-service",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="custom-service",vdom="kalle-test"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="dialup-tunnel",vdom="gur-proddmzext"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="dialup-tunnel",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-address",vdom="gur-proddmzext"} 198094
-	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-address",vdom="kalle-test"} 198090
-	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-addrgrp",vdom="gur-proddmzext"} 33189
-	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-addrgrp",vdom="kalle-test"} 33188
-	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-policy",vdom="gur-proddmzext"} 201009
-	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-policy",vdom="kalle-test"} 201007
-	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase1",vdom="gur-proddmzext"} 20000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase1",vdom="kalle-test"} 20000
+	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-address",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-address",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-addrgrp",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-addrgrp",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-policy",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="firewall-policy",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase1",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase1",vdom="kalle-test"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase1-interface",vdom="gur-proddmzext"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase1-interface",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase2",vdom="gur-proddmzext"} 20000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase2",vdom="kalle-test"} 20000
+	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase2",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase2",vdom="kalle-test"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase2-interface",vdom="gur-proddmzext"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="ipsec-phase2-interface",vdom="kalle-test"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="log-disk-quota",vdom="gur-proddmzext"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="log-disk-quota",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_min_value{object="onetime-schedule",vdom="gur-proddmzext"} 5000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="onetime-schedule",vdom="kalle-test"} 5000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="proxy",vdom="gur-proddmzext"} 64000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="proxy",vdom="kalle-test"} 64000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="recurring-schedule",vdom="gur-proddmzext"} 1024
-	fortigate_vdom_resource_object_guaranteed_min_value{object="recurring-schedule",vdom="kalle-test"} 1024
-	fortigate_vdom_resource_object_guaranteed_min_value{object="service-group",vdom="gur-proddmzext"} 4000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="service-group",vdom="kalle-test"} 4000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="session",vdom="gur-proddmzext"} 200000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="session",vdom="kalle-test"} 2.165e+07
+	fortigate_vdom_resource_object_guaranteed_min_value{object="onetime-schedule",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="onetime-schedule",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="proxy",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="proxy",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="recurring-schedule",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="recurring-schedule",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="service-group",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="service-group",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="session",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="session",vdom="kalle-test"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="sslvpn",vdom="gur-proddmzext"} 0
 	fortigate_vdom_resource_object_guaranteed_min_value{object="sslvpn",vdom="kalle-test"} 0
-	fortigate_vdom_resource_object_guaranteed_min_value{object="user",vdom="gur-proddmzext"} 5000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="user",vdom="kalle-test"} 5000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="user-group",vdom="gur-proddmzext"} 2000
-	fortigate_vdom_resource_object_guaranteed_min_value{object="user-group",vdom="kalle-test"} 2000
+	fortigate_vdom_resource_object_guaranteed_min_value{object="user",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="user",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="user-group",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_min_value{object="user-group",vdom="kalle-test"} 0
+	# HELP fortigate_vdom_resource_object_guaranteed_max_value Object Maximum guaranteed value
+	# TYPE fortigate_vdom_resource_object_guaranteed_max_value gauge
+	fortigate_vdom_resource_object_guaranteed_max_value{object="custom-service",vdom="gur-proddmzext"} 10240
+	fortigate_vdom_resource_object_guaranteed_max_value{object="custom-service",vdom="kalle-test"} 10240
+	fortigate_vdom_resource_object_guaranteed_max_value{object="dialup-tunnel",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="dialup-tunnel",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-address",vdom="gur-proddmzext"} 198094
+	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-address",vdom="kalle-test"} 198090
+	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-addrgrp",vdom="gur-proddmzext"} 33189
+	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-addrgrp",vdom="kalle-test"} 33188
+	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-policy",vdom="gur-proddmzext"} 201009
+	fortigate_vdom_resource_object_guaranteed_max_value{object="firewall-policy",vdom="kalle-test"} 201007
+	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase1",vdom="gur-proddmzext"} 20000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase1",vdom="kalle-test"} 20000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase1-interface",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase1-interface",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase2",vdom="gur-proddmzext"} 20000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase2",vdom="kalle-test"} 20000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase2-interface",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="ipsec-phase2-interface",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="log-disk-quota",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="log-disk-quota",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="onetime-schedule",vdom="gur-proddmzext"} 5000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="onetime-schedule",vdom="kalle-test"} 5000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="proxy",vdom="gur-proddmzext"} 64000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="proxy",vdom="kalle-test"} 64000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="recurring-schedule",vdom="gur-proddmzext"} 1024
+	fortigate_vdom_resource_object_guaranteed_max_value{object="recurring-schedule",vdom="kalle-test"} 1024
+	fortigate_vdom_resource_object_guaranteed_max_value{object="service-group",vdom="gur-proddmzext"} 4000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="service-group",vdom="kalle-test"} 4000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="session",vdom="gur-proddmzext"} 200000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="session",vdom="kalle-test"} 2.165e+07
+	fortigate_vdom_resource_object_guaranteed_max_value{object="sslvpn",vdom="gur-proddmzext"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="sslvpn",vdom="kalle-test"} 0
+	fortigate_vdom_resource_object_guaranteed_max_value{object="user",vdom="gur-proddmzext"} 5000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="user",vdom="kalle-test"} 5000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="user-group",vdom="gur-proddmzext"} 2000
+	fortigate_vdom_resource_object_guaranteed_max_value{object="user-group",vdom="kalle-test"} 2000
 	# HELP fortigate_vdom_resource_object_id Object Resource ID
 	# TYPE fortigate_vdom_resource_object_id gauge
 	fortigate_vdom_resource_object_id{object="custom-service",vdom="gur-proddmzext"} 9

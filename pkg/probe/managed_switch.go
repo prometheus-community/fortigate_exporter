@@ -22,7 +22,7 @@ import (
 	"github.com/prometheus-community/fortigate_exporter/pkg/fortigatehttpclient"
 )
 
-func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]prometheus.Metric, bool) {
+func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) ([]prometheus.Metric, bool) {
 	var (
 		managedSwitchInfo = prometheus.NewDesc(
 			"fortigate_managed_switch_info",
@@ -217,6 +217,7 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]p
 
 	type Results struct {
 		Name           string              `json:"name"`
+		SwitchID       string              `json:"switch-id"`
 		VDOM           string              `json:"vdom"`
 		Serial         string              `json:"serial"`
 		OSVersion      string              `json:"os_version"`
@@ -240,46 +241,53 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]p
 		return nil, false
 	}
 
+	// FortiOS 7.4+ uses "switch-id" field; older versions use "name"
+	usesSwitchID := meta.VersionMajor > 7 || (meta.VersionMajor == 7 && meta.VersionMinor >= 4)
+
 	var m []prometheus.Metric
 	for _, rs := range response {
 		for _, result := range rs.Results {
-			m = append(m, prometheus.MustNewConstMetric(managedSwitchInfo, prometheus.CounterValue, 1, result.VDOM, result.Name, result.OSVersion, result.Serial, result.State, result.Status))
-			m = append(m, prometheus.MustNewConstMetric(managedSwitchMaxPoeBudget, prometheus.CounterValue, result.MaxPoeBudget, result.VDOM, result.Name))
+			switchName := result.Name
+			if usesSwitchID {
+				switchName = result.SwitchID
+			}
+			m = append(m, prometheus.MustNewConstMetric(managedSwitchInfo, prometheus.CounterValue, 1, result.VDOM, switchName, result.OSVersion, result.Serial, result.State, result.Status))
+			m = append(m, prometheus.MustNewConstMetric(managedSwitchMaxPoeBudget, prometheus.CounterValue, result.MaxPoeBudget, result.VDOM, switchName))
 			for _, port := range result.Ports {
 				if port.Status == "up" {
-					m = append(m, prometheus.MustNewConstMetric(portStatus, prometheus.GaugeValue, 1, result.VDOM, result.Name, port.Interface))
+					m = append(m, prometheus.MustNewConstMetric(portStatus, prometheus.GaugeValue, 1, result.VDOM, switchName, port.Interface))
 				} else {
-					m = append(m, prometheus.MustNewConstMetric(portStatus, prometheus.GaugeValue, 0, result.VDOM, result.Name, port.Interface))
+					m = append(m, prometheus.MustNewConstMetric(portStatus, prometheus.GaugeValue, 0, result.VDOM, switchName, port.Interface))
 				}
-				m = append(m, prometheus.MustNewConstMetric(portInfo, prometheus.GaugeValue, 1, result.VDOM, result.Name, port.Interface, port.Vlan, port.Duplex, port.Status, port.PoeStatus, strconv.FormatBool(port.PoeCapable)))
-				m = append(m, prometheus.MustNewConstMetric(portPower, prometheus.GaugeValue, port.PortPower, result.VDOM, result.Name, port.Interface))
-				m = append(m, prometheus.MustNewConstMetric(portPowerStatus, prometheus.GaugeValue, port.PowerStatus, result.VDOM, result.Name, port.Interface))
+				m = append(m, prometheus.MustNewConstMetric(portInfo, prometheus.GaugeValue, 1, result.VDOM, switchName, port.Interface, port.Vlan, port.Duplex, port.Status, port.PoeStatus, strconv.FormatBool(port.PoeCapable)))
+				m = append(m, prometheus.MustNewConstMetric(portPower, prometheus.GaugeValue, port.PortPower, result.VDOM, switchName, port.Interface))
+				m = append(m, prometheus.MustNewConstMetric(portPowerStatus, prometheus.GaugeValue, port.PowerStatus, result.VDOM, switchName, port.Interface))
 
 			}
 			for portName, port := range result.PortStats {
-				m = append(m, prometheus.MustNewConstMetric(portRxBytes, prometheus.CounterValue, port.BytesRx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portTxBytes, prometheus.CounterValue, port.BytesTx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portRxPackets, prometheus.CounterValue, port.PacketsRx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portTxPackets, prometheus.CounterValue, port.PacketsTx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portRxUcast, prometheus.CounterValue, port.UcastRx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portTxUcast, prometheus.CounterValue, port.UcastTx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portRxMcast, prometheus.CounterValue, port.McastRx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portTxMcast, prometheus.CounterValue, port.McastTx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portRxBcast, prometheus.CounterValue, port.BcastRx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portTxBcast, prometheus.CounterValue, port.BcastTx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portRxErrors, prometheus.CounterValue, port.ErrorsRx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portTxErrors, prometheus.CounterValue, port.ErrorsTx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portRxDrops, prometheus.CounterValue, port.DroppedRx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portTxDrops, prometheus.CounterValue, port.DroppedTx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portRxOversize, prometheus.CounterValue, port.OversizeRx, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portTxOversize, prometheus.CounterValue, port.OversizeTx, result.VDOM, result.Name, portName))
+				m = append(m, prometheus.MustNewConstMetric(portRxBytes, prometheus.CounterValue, port.BytesRx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portTxBytes, prometheus.CounterValue, port.BytesTx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portRxPackets, prometheus.CounterValue, port.PacketsRx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portTxPackets, prometheus.CounterValue, port.PacketsTx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portRxUcast, prometheus.CounterValue, port.UcastRx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portTxUcast, prometheus.CounterValue, port.UcastTx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portRxMcast, prometheus.CounterValue, port.McastRx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portTxMcast, prometheus.CounterValue, port.McastTx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portRxBcast, prometheus.CounterValue, port.BcastRx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portTxBcast, prometheus.CounterValue, port.BcastTx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portRxErrors, prometheus.CounterValue, port.ErrorsRx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portTxErrors, prometheus.CounterValue, port.ErrorsTx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portRxDrops, prometheus.CounterValue, port.DroppedRx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portTxDrops, prometheus.CounterValue, port.DroppedTx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portRxOversize, prometheus.CounterValue, port.OversizeRx, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portTxOversize, prometheus.CounterValue, port.OversizeTx, result.VDOM, switchName, portName))
 
-				m = append(m, prometheus.MustNewConstMetric(portUndersize, prometheus.CounterValue, port.Undersize, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portFragments, prometheus.CounterValue, port.Fragments, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portJabbers, prometheus.CounterValue, port.Jabbers, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portCollisions, prometheus.CounterValue, port.Collisions, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portCrcAlignments, prometheus.CounterValue, port.CrcAlignments, result.VDOM, result.Name, portName))
-				m = append(m, prometheus.MustNewConstMetric(portL3Packets, prometheus.CounterValue, port.L3Packets, result.VDOM, result.Name, portName))
+				m = append(m, prometheus.MustNewConstMetric(portUndersize, prometheus.CounterValue, port.Undersize, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portFragments, prometheus.CounterValue, port.Fragments, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portJabbers, prometheus.CounterValue, port.Jabbers, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portCollisions, prometheus.CounterValue, port.Collisions, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portCrcAlignments, prometheus.CounterValue, port.CrcAlignments, result.VDOM, switchName, portName))
+				m = append(m, prometheus.MustNewConstMetric(portL3Packets, prometheus.CounterValue, port.L3Packets, result.VDOM, switchName, portName))
 			}
 		}
 	}
