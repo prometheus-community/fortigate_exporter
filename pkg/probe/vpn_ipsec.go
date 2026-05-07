@@ -39,6 +39,16 @@ func probeVPNIPSec(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]promet
 			"Total number of bytes received over the IPsec tunnel",
 			[]string{"vdom", "name", "p2serial", "parent"}, nil,
 		)
+		parentTransmitted = prometheus.NewDesc(
+			"fortigate_ipsec_tunnel_parent_transmit_bytes_total",
+			"Total bytes transmitted over the IPsec tunnel (parent counter, accurate under NPU offload)",
+			[]string{"vdom", "name"}, nil,
+		)
+		parentReceived = prometheus.NewDesc(
+			"fortigate_ipsec_tunnel_parent_receive_bytes_total",
+			"Total bytes received over the IPsec tunnel (parent counter, accurate under NPU offload)",
+			[]string{"vdom", "name"}, nil,
+		)
 	)
 
 	type proxyid struct {
@@ -49,10 +59,12 @@ func probeVPNIPSec(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]promet
 		Outgoing float64 `json:"outgoing_bytes"`
 	}
 	type tunnel struct {
-		Name       string    `json:"name"`
-		Type       string    `json:"type"`
-		ProxyID    []proxyid `json:"proxyid"`
-		Connection int       `json:"connection_count"`
+		Name          string    `json:"name"`
+		Type          string    `json:"type"`
+		ProxyID       []proxyid `json:"proxyid"`
+		Connection    int       `json:"connection_count"`
+		IncomingBytes float64   `json:"incoming_bytes"`
+		OutgoingBytes float64   `json:"outgoing_bytes"`
 	}
 	type ipsecResult struct {
 		Results []tunnel `json:"results"`
@@ -74,6 +86,12 @@ func probeVPNIPSec(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]promet
 			if i.Type == "dialup" {
 				continue
 			}
+			m = append(m, prometheus.MustNewConstMetric(
+				parentTransmitted, prometheus.CounterValue,
+				i.OutgoingBytes, v.VDOM, i.Name))
+			m = append(m, prometheus.MustNewConstMetric(
+				parentReceived, prometheus.CounterValue,
+				i.IncomingBytes, v.VDOM, i.Name))
 			for _, t := range i.ProxyID {
 				s := 0.0
 				if t.Status == "up" {

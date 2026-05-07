@@ -30,6 +30,12 @@ func TestVPNIPSec(t *testing.T) {
 	}
 
 	em := `
+	# HELP fortigate_ipsec_tunnel_parent_receive_bytes_total Total bytes received over the IPsec tunnel (parent counter, accurate under NPU offload)
+	# TYPE fortigate_ipsec_tunnel_parent_receive_bytes_total counter
+	fortigate_ipsec_tunnel_parent_receive_bytes_total{name="tunnel_1",vdom="root"} 1.429824e+07
+	# HELP fortigate_ipsec_tunnel_parent_transmit_bytes_total Total bytes transmitted over the IPsec tunnel (parent counter, accurate under NPU offload)
+	# TYPE fortigate_ipsec_tunnel_parent_transmit_bytes_total counter
+	fortigate_ipsec_tunnel_parent_transmit_bytes_total{name="tunnel_1",vdom="root"} 1.424856e+07
 	# HELP fortigate_ipsec_tunnel_receive_bytes_total Total number of bytes received over the IPsec tunnel
 	# TYPE fortigate_ipsec_tunnel_receive_bytes_total counter
 	fortigate_ipsec_tunnel_receive_bytes_total{name="tunnel_1-sub",p2serial="1",parent="tunnel_1",vdom="root"} 1.429824e+07
@@ -59,6 +65,12 @@ func TestVPNIPSecWithCommonP2Names(t *testing.T) {
 	}
 
 	em := `
+	# HELP fortigate_ipsec_tunnel_parent_receive_bytes_total Total bytes received over the IPsec tunnel (parent counter, accurate under NPU offload)
+	# TYPE fortigate_ipsec_tunnel_parent_receive_bytes_total counter
+	fortigate_ipsec_tunnel_parent_receive_bytes_total{name="My VPN",vdom="root"} 3.1301813185e+11
+	# HELP fortigate_ipsec_tunnel_parent_transmit_bytes_total Total bytes transmitted over the IPsec tunnel (parent counter, accurate under NPU offload)
+	# TYPE fortigate_ipsec_tunnel_parent_transmit_bytes_total counter
+	fortigate_ipsec_tunnel_parent_transmit_bytes_total{name="My VPN",vdom="root"} 1.34036710453e+11
 	# HELP fortigate_ipsec_tunnel_receive_bytes_total Total number of bytes received over the IPsec tunnel
 	# TYPE fortigate_ipsec_tunnel_receive_bytes_total counter
 	fortigate_ipsec_tunnel_receive_bytes_total{name="CommonP2",p2serial="22",parent="My VPN",vdom="root"} 0
