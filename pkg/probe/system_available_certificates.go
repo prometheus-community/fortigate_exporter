@@ -63,7 +63,7 @@ func probeSystemAvailableCertificates(c fortigatehttpclient.FortiHTTP, _ *Target
 	}
 
 	var globalResponse Response
-	if err := c.Get("api/v2/monitor/system/available-certificates", "scope=global", &globalResponse); err != nil {
+	if err := c.Get("api/v2/monitor/system/available-certificates", "scope=global&with_remote=1", &globalResponse); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func probeSystemAvailableCertificates(c fortigatehttpclient.FortiHTTP, _ *Target
 
 	var vdomResponses []Response
 
-	if err := c.Get("api/v2/monitor/system/available-certificates", "vdom=*", &vdomResponses); err != nil {
+	if err := c.Get("api/v2/monitor/system/available-certificates", "vdom=*&with_remote=1", &vdomResponses); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false
 	}
