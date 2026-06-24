@@ -66,14 +66,7 @@ func probeVPNIPSec(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]promet
 
 	m := []prometheus.Metric{}
 	for _, v := range res {
-		for _, i := range v.Results {
-			/*
-			  type 'dialup' seems to be client vpn.
-			  Not sure exactly what the difference is between probeVPNSsl
-			*/
-			if i.Type == "dialup" {
-				continue
-			}
+		for _, i := range v.Results {			
 			for _, t := range i.ProxyID {
 				s := 0.0
 				if t.Status == "up" {
