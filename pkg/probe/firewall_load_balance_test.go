@@ -24,6 +24,7 @@ import (
 func TestFirewallLoadBalance(t *testing.T) {
 	c := newFakeClient()
 	c.prepare("api/v2/monitor/firewall/load-balance?vdom=*&start=0&count=1000", "testdata/fw-loadbalancers.jsonnet")
+	c.prepare("api/v2/cmdb/firewall/vip?vdom=*", "testdata/fw-loadbalancers-vip-config.jsonnet")
 	r := prometheus.NewPedanticRegistry()
 	if !testProbe(probeFirewallLoadBalance, c, r) {
 		t.Errorf("testLoadBalanceServers() returned non-success")
@@ -42,6 +43,12 @@ func TestFirewallLoadBalance(t *testing.T) {
 	fortigate_lb_real_server_info{id="2",ip="10.10.0.2",port="8080",vdom="root",virtual_server="LB-EXAMPLE"} 1
 	fortigate_lb_real_server_info{id="3",ip="10.10.0.3",port="8080",vdom="root",virtual_server="LB-EXAMPLE"} 1
 	fortigate_lb_real_server_info{id="4",ip="10.10.0.4",port="8080",vdom="root",virtual_server="LB-EXAMPLE"} 1
+	# HELP fortigate_lb_real_server_max_connections Configured maximum concurrent connections for this real server (0 = unlimited)
+	# TYPE fortigate_lb_real_server_max_connections gauge
+	fortigate_lb_real_server_max_connections{id="1",vdom="root",virtual_server="LB-EXAMPLE"} 10000
+	fortigate_lb_real_server_max_connections{id="2",vdom="root",virtual_server="LB-EXAMPLE"} 5000
+	fortigate_lb_real_server_max_connections{id="3",vdom="root",virtual_server="LB-EXAMPLE"} 0
+	fortigate_lb_real_server_max_connections{id="4",vdom="root",virtual_server="LB-EXAMPLE"} 2000
 	# HELP fortigate_lb_real_server_mode Mode of this real server: active, standby or disabled
 	# TYPE fortigate_lb_real_server_mode gauge
 	fortigate_lb_real_server_mode{id="1",mode="active",vdom="root",virtual_server="LB-EXAMPLE"} 1

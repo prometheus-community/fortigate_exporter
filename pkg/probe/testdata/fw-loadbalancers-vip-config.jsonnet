@@ -1,0 +1,29 @@
+# api/v2/cmdb/firewall/vip?vdom=*
+[
+  {
+    "results":[
+      {
+        "name":"LB-EXAMPLE",
+        "realservers":[
+          {
+            "id":1,
+            "max-connections":10000
+          },
+          {
+            "id":2,
+            "max-connections":5000
+          },
+          {
+            "id":3,
+            "max-connections":0
+          },
+          {
+            "id":4,
+            "max-connections":2000
+          }
+        ]
+      }
+    ],
+    "vdom":"root"
+  }
+]

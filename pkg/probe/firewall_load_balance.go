@@ -65,6 +65,11 @@ func probeFirewallLoadBalance(c fortigatehttpclient.FortiHTTP, meta *TargetMetad
 			"Number of bytes processed by this real server",
 			[]string{"vdom", "virtual_server", "id"}, nil,
 		)
+		realServerMaxConnections = prometheus.NewDesc(
+			"fortigate_lb_real_server_max_connections",
+			"Configured maximum concurrent connections for this real server (0 = unlimited)",
+			[]string{"vdom", "virtual_server", "id"}, nil,
+		)
 	)
 
 	type RealServer struct {
@@ -104,6 +109,40 @@ func probeFirewallLoadBalance(c fortigatehttpclient.FortiHTTP, meta *TargetMetad
 	if err := c.Get("api/v2/monitor/firewall/load-balance", "vdom=*&start=0&count=1000", &rs); err != nil {
 		log.Printf("Error: %v", err)
 		return nil, false
+	}
+
+	type vipRealServer struct {
+		ID             int `json:"id"`
+		MaxConnections int `json:"max-connections"`
+	}
+	type vipConfig struct {
+		Name        string          `json:"name"`
+		RealServers []vipRealServer `json:"realservers"`
+	}
+	type vipResponse struct {
+		Results []vipConfig
+		VDOM    string
+	}
+
+	var vips []vipResponse
+	if err := c.Get("api/v2/cmdb/firewall/vip", "vdom=*", &vips); err != nil {
+		log.Printf("Error: %v", err)
+		return nil, false
+	}
+
+	maxConnections := map[string]map[int]int{}
+	for _, v := range vips {
+		for _, vc := range v.Results {
+			key := v.VDOM + "\x00" + vc.Name
+			rsMap, ok := maxConnections[key]
+			if !ok {
+				rsMap = map[int]int{}
+				maxConnections[key] = rsMap
+			}
+			for _, rs := range vc.RealServers {
+				rsMap[rs.ID] = rs.MaxConnections
+			}
+		}
 	}
 
 	m := []prometheus.Metric{}
@@ -157,6 +196,7 @@ func probeFirewallLoadBalance(c fortigatehttpclient.FortiHTTP, meta *TargetMetad
 				m = append(m, prometheus.MustNewConstMetric(realServerSessions, prometheus.GaugeValue, realServer.ActiveSessions, r.VDOM, virtualServer.Name, strconv.Itoa(realServer.ID)))
 				m = append(m, prometheus.MustNewConstMetric(realServerRTT, prometheus.GaugeValue, realServerRTTValue, r.VDOM, virtualServer.Name, strconv.Itoa(realServer.ID)))
 				m = append(m, prometheus.MustNewConstMetric(realServerBytesProcessed, prometheus.CounterValue, realServer.BytesProcessed, r.VDOM, virtualServer.Name, strconv.Itoa(realServer.ID)))
+				m = append(m, prometheus.MustNewConstMetric(realServerMaxConnections, prometheus.GaugeValue, float64(maxConnections[r.VDOM+"\x00"+virtualServer.Name][realServer.ID]), r.VDOM, virtualServer.Name, strconv.Itoa(realServer.ID)))
 			}
 		}
 	}
