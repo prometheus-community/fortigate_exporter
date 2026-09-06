@@ -209,6 +209,7 @@ Per-VDOM:
    * `fortigate_lb_real_server_active_sessions`
    * `fortigate_lb_real_server_rtt_seconds`
    * `fortigate_lb_real_server_processed_bytes_total`
+   * `fortigate_lb_real_server_max_connections`
 
  Per-Certificate:
  * _System/AvailableCertificates_
