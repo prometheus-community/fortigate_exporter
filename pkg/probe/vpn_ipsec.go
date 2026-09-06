@@ -88,10 +88,12 @@ func probeVPNIPSec(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]promet
 			}
 			m = append(m, prometheus.MustNewConstMetric(
 				parentTransmitted, prometheus.CounterValue,
-				i.OutgoingBytes, v.VDOM, i.Name))
+				i.OutgoingBytes, v.VDOM, i.Name,
+			))
 			m = append(m, prometheus.MustNewConstMetric(
 				parentReceived, prometheus.CounterValue,
-				i.IncomingBytes, v.VDOM, i.Name))
+				i.IncomingBytes, v.VDOM, i.Name,
+			))
 			for _, t := range i.ProxyID {
 				s := 0.0
 				if t.Status == "up" {

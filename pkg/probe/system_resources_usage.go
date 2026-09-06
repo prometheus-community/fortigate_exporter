@@ -76,7 +76,8 @@ func probeSystemResourceUsage(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata
 	m := []prometheus.Metric{}
 	for i, cpu := range sr.Results.CPU[1:] {
 		m = append(m, prometheus.MustNewConstMetric(
-			mResCPU, prometheus.GaugeValue, float64(cpu.Current)/100.0, fmt.Sprintf("%d", i)))
+			mResCPU, prometheus.GaugeValue, float64(cpu.Current)/100.0, fmt.Sprintf("%d", i),
+		))
 	}
 	m = append(m, prometheus.MustNewConstMetric(mResMemory, prometheus.GaugeValue, float64(sr.Results.Mem[0].Current)/100.0))
 	m = append(m, prometheus.MustNewConstMetric(mResSession, prometheus.GaugeValue, float64(sr.Results.Session[0].Current), "ipv4"))
