@@ -30,7 +30,8 @@ formatters:
         - default
         - prefix(github.com/prometheus-community/fortigate_exporter)
     gofumpt:
-      extra-rules: true
+      extra:
+        group-params: true
     goimports:
       local-prefixes:
         - github.com/prometheus-community/fortigate_exporter
