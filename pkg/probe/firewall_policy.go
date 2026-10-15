@@ -80,6 +80,11 @@ func probeFirewallPolicies(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) (
 		return nil, false
 	}
 
+	if len(ps4) == 0 {
+		log.Printf("Error: no firewall policy results returned")
+		return nil, false
+	}
+
 	combined := false
 	major, minor, ok := fortiversion.ParseVersion(ps4[0].Version)
 	if !ok {
