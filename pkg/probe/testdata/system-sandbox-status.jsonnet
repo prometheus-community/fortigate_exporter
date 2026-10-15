@@ -1,0 +1,20 @@
+{
+  "http_method":"GET",
+  "results": {
+    "configured":true,
+    "type":"appliance",
+    "cloud_region":"",
+    "server":"0.0.0.0",
+    "malware_package_version":"5.125",
+    "signatures_loaded":false,
+    "signatures_count":0
+  },
+  "vdom":"root",
+  "path":"system",
+  "name":"sandbox",
+  "action":"status",
+  "status":"success",
+  "serial":"g43sags54rh5es",
+  "version":"v7.4.8",
+  "build":2795
+}
