@@ -269,6 +269,7 @@ Per-VDOM, managed switch and interface:
   * `fortigate_managed_switch_fragments_total`
   * `fortigate_managed_switch_info`
   * `fortigate_managed_switch_jabbers_total`
+  * `fortigate_managed_switch_join_time_seconds`
   * `fortigate_managed_switch_l3_packets_total`
   * `fortigate_managed_switch_max_poe_budget_watt`
   * `fortigate_managed_switch_port_info`
