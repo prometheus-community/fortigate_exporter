@@ -14,8 +14,11 @@
 package probe
 
 import (
+	"encoding/json"
 	"log"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 
@@ -32,6 +35,11 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) (
 		managedSwitchMaxPoeBudget = prometheus.NewDesc(
 			"fortigate_managed_switch_max_poe_budget_watt",
 			"Max poe budget watt",
+			[]string{"vdom", "switch_name"}, nil,
+		)
+		managedSwitchJoinTime = prometheus.NewDesc(
+			"fortigate_managed_switch_join_time_seconds",
+			"Unix timestamp of when the switch last joined FortiLink (resets on reboot or FortiLink reconnection)",
 			[]string{"vdom", "switch_name"}, nil,
 		)
 		portInfo = prometheus.NewDesc(
@@ -224,6 +232,7 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) (
 		State          string              `json:"state"`
 		Status         string              `json:"status"`
 		ConnectingFrom string              `json:"connecting_from"`
+		JoinTime       string              `json:"join_time"`
 		JoinTimeRaw    float64             `json:"join_time_raw"`
 		MaxPoeBudget   float64             `json:"max_poe_budget"`
 		Ports          []Port              `json:"ports"`
@@ -244,6 +253,14 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) (
 	// FortiOS 7.4+ uses "switch-id" field; older versions use "name"
 	usesSwitchID := meta.VersionMajor > 7 || (meta.VersionMajor == 7 && meta.VersionMinor >= 4)
 
+	// join_time is reported as local time of the FortiGate without a zone
+	// (e.g. "Tue Sep 29 17:19:47 2026"), so it is parsed with the FortiGate's
+	// configured timezone, fetched once and only if needed.
+	var (
+		joinLocation        *time.Location
+		joinLocationFetched bool
+	)
+
 	var m []prometheus.Metric
 	for _, rs := range response {
 		for _, result := range rs.Results {
@@ -253,6 +270,13 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) (
 			}
 			m = append(m, prometheus.MustNewConstMetric(managedSwitchInfo, prometheus.CounterValue, 1, result.VDOM, switchName, result.OSVersion, result.Serial, result.State, result.Status))
 			m = append(m, prometheus.MustNewConstMetric(managedSwitchMaxPoeBudget, prometheus.CounterValue, result.MaxPoeBudget, result.VDOM, switchName))
+			if result.JoinTimeRaw <= 0 && !joinLocationFetched {
+				joinLocation = fortigateLocation(c)
+				joinLocationFetched = true
+			}
+			if joinTime, ok := switchJoinTime(result.JoinTimeRaw, result.JoinTime, joinLocation); ok {
+				m = append(m, prometheus.MustNewConstMetric(managedSwitchJoinTime, prometheus.GaugeValue, joinTime, result.VDOM, switchName))
+			}
 			for _, port := range result.Ports {
 				if port.Status == "up" {
 					m = append(m, prometheus.MustNewConstMetric(portStatus, prometheus.GaugeValue, 1, result.VDOM, switchName, port.Interface))
@@ -293,4 +317,53 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) (
 	}
 
 	return m, true
+}
+
+// switchJoinTime returns the Unix time at which a switch joined FortiLink.
+// join_time_raw is used when present; otherwise join_time, which FortiOS
+// reports as local time in ANSI C format without a zone, is parsed in loc.
+func switchJoinTime(raw float64, text string, loc *time.Location) (float64, bool) {
+	if raw > 0 {
+		return raw, true
+	}
+	text = strings.TrimSpace(text)
+	if text == "" || loc == nil {
+		return 0, false
+	}
+	t, err := time.ParseInLocation(time.ANSIC, text, loc)
+	if err != nil {
+		log.Printf("Warning: cannot parse managed switch join_time %q: %v", text, err)
+		return 0, false
+	}
+	return float64(t.Unix()), true
+}
+
+// fortigateLocation returns the timezone configured on the FortiGate
+// (config system global, e.g. "America/Asuncion"), or nil if it cannot be
+// read or is not an IANA name.
+func fortigateLocation(c fortigatehttpclient.FortiHTTP) *time.Location {
+	type systemGlobal struct {
+		Timezone string `json:"timezone"`
+	}
+	var resp struct {
+		Results json.RawMessage `json:"results"`
+	}
+	if err := c.Get("api/v2/cmdb/system/global", "vdom=root", &resp); err != nil {
+		log.Printf("Warning: cannot read system timezone, managed switch join time not exported: %v", err)
+		return nil
+	}
+	var g systemGlobal
+	if err := json.Unmarshal(resp.Results, &g); err != nil {
+		var arr []systemGlobal
+		if err := json.Unmarshal(resp.Results, &arr); err != nil || len(arr) == 0 {
+			return nil
+		}
+		g = arr[0]
+	}
+	loc, err := time.LoadLocation(g.Timezone)
+	if err != nil || g.Timezone == "" {
+		log.Printf("Warning: unknown system timezone %q, managed switch join time not exported", g.Timezone)
+		return nil
+	}
+	return loc
 }
