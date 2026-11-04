@@ -14,6 +14,10 @@
 package probe
 
 import (
+	"bytes"
+	"errors"
+	"log"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -194,9 +198,9 @@ func TestProbeManagedSwitch(t *testing.T) {
 		fortigate_managed_switch_l3_packets_total{port="port7",switch_name="FOO-SW-01",vdom="root"} 0
 		fortigate_managed_switch_l3_packets_total{port="port8",switch_name="FOO-SW-01",vdom="root"} 0
 		fortigate_managed_switch_l3_packets_total{port="port9",switch_name="FOO-SW-01",vdom="root"} 0
-		# HELP fortigate_managed_switch_join_time_seconds Unix timestamp of when the switch last joined FortiLink (resets on reboot or FortiLink reconnection)
-		# TYPE fortigate_managed_switch_join_time_seconds gauge
-		fortigate_managed_switch_join_time_seconds{switch_name="FOO-SW-01",vdom="root"} 1649836954
+		# HELP fortigate_managed_switch_join_timestamp_seconds Unix timestamp of when the switch last joined FortiLink (resets on reboot or FortiLink reconnection)
+		# TYPE fortigate_managed_switch_join_timestamp_seconds gauge
+		fortigate_managed_switch_join_timestamp_seconds{switch_name="FOO-SW-01",vdom="root"} 1649836954
 		# HELP fortigate_managed_switch_max_poe_budget_watt Max poe budget watt
 		# TYPE fortigate_managed_switch_max_poe_budget_watt counter
 		fortigate_managed_switch_max_poe_budget_watt{switch_name="FOO-SW-01",vdom="root"} 370
@@ -891,9 +895,9 @@ func TestProbeManagedSwitchFortiOS74(t *testing.T) {
 		# TYPE fortigate_managed_switch_l3_packets_total counter
 		fortigate_managed_switch_l3_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
 		fortigate_managed_switch_l3_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
-		# HELP fortigate_managed_switch_join_time_seconds Unix timestamp of when the switch last joined FortiLink (resets on reboot or FortiLink reconnection)
-		# TYPE fortigate_managed_switch_join_time_seconds gauge
-		fortigate_managed_switch_join_time_seconds{switch_name="FOO-SW-74",vdom="root"} 1704060000
+		# HELP fortigate_managed_switch_join_timestamp_seconds Unix timestamp of when the switch last joined FortiLink (resets on reboot or FortiLink reconnection)
+		# TYPE fortigate_managed_switch_join_timestamp_seconds gauge
+		fortigate_managed_switch_join_timestamp_seconds{switch_name="FOO-SW-74",vdom="root"} 1704060000
 		# HELP fortigate_managed_switch_max_poe_budget_watt Max poe budget watt
 		# TYPE fortigate_managed_switch_max_poe_budget_watt counter
 		fortigate_managed_switch_max_poe_budget_watt{switch_name="FOO-SW-74",vdom="root"} 370
@@ -1012,5 +1016,25 @@ func TestSwitchJoinTime(t *testing.T) {
 		if ok != tc.ok || got != tc.want {
 			t.Errorf("%s: switchJoinTime() = %v, %v; want %v, %v", tc.name, got, ok, tc.want, tc.ok)
 		}
+	}
+}
+
+type failingClient struct{}
+
+func (failingClient) Get(path, _ string, _ any) error {
+	return errors.New(`response code was 403, expected 200 (path: "` + path + `")`)
+}
+
+func TestFortigateLocationWarnsOnce(t *testing.T) {
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+	for range 3 {
+		if loc := fortigateLocation(failingClient{}); loc != nil {
+			t.Fatalf("fortigateLocation() = %v, want nil", loc)
+		}
+	}
+	if n := strings.Count(buf.String(), "cannot read system timezone"); n != 1 {
+		t.Errorf("warning logged %d times, want 1:\n%s", n, buf.String())
 	}
 }
