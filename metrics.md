@@ -269,7 +269,10 @@ Per-VDOM, managed switch and interface:
   * `fortigate_managed_switch_fragments_total`
   * `fortigate_managed_switch_info`
   * `fortigate_managed_switch_jabbers_total`
-  * `fortigate_managed_switch_join_time_seconds`
+  * `fortigate_managed_switch_join_timestamp_seconds`
+    * Needs read access to `sysgrp.cfg` (`api/v2/cmdb/system/global`): when FortiOS only reports `join_time` as local
+      time, it is converted with the FortiGate's configured timezone. Without that permission the metric is omitted and a
+      warning is logged once. Near a daylight saving time change the local time is ambiguous and the value can be off by one hour.
   * `fortigate_managed_switch_l3_packets_total`
   * `fortigate_managed_switch_max_poe_budget_watt`
   * `fortigate_managed_switch_port_info`
