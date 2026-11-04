@@ -15,9 +15,11 @@ package probe
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -38,7 +40,7 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) (
 			[]string{"vdom", "switch_name"}, nil,
 		)
 		managedSwitchJoinTime = prometheus.NewDesc(
-			"fortigate_managed_switch_join_time_seconds",
+			"fortigate_managed_switch_join_timestamp_seconds",
 			"Unix timestamp of when the switch last joined FortiLink (resets on reboot or FortiLink reconnection)",
 			[]string{"vdom", "switch_name"}, nil,
 		)
@@ -349,7 +351,7 @@ func fortigateLocation(c fortigatehttpclient.FortiHTTP) *time.Location {
 		Results json.RawMessage `json:"results"`
 	}
 	if err := c.Get("api/v2/cmdb/system/global", "vdom=root", &resp); err != nil {
-		log.Printf("Warning: cannot read system timezone, managed switch join time not exported: %v", err)
+		warnOnce("Warning: cannot read system timezone (needs sysgrp.cfg read permission), managed switch join time not exported: %v", err)
 		return nil
 	}
 	var g systemGlobal
@@ -362,8 +364,20 @@ func fortigateLocation(c fortigatehttpclient.FortiHTTP) *time.Location {
 	}
 	loc, err := time.LoadLocation(g.Timezone)
 	if err != nil || g.Timezone == "" {
-		log.Printf("Warning: unknown system timezone %q, managed switch join time not exported", g.Timezone)
+		warnOnce("Warning: unknown system timezone %q, managed switch join time not exported", g.Timezone)
 		return nil
 	}
 	return loc
+}
+
+// joinTimeWarnings holds the timezone warnings already logged. A missing
+// permission or an unknown timezone does not change between scrapes, so each
+// distinct message is logged once per process instead of on every scrape.
+var joinTimeWarnings sync.Map
+
+func warnOnce(format string, args ...any) {
+	msg := fmt.Sprintf(format, args...)
+	if _, seen := joinTimeWarnings.LoadOrStore(msg, struct{}{}); !seen {
+		log.Print(msg)
+	}
 }
