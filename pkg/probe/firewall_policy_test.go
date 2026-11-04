@@ -28,7 +28,7 @@ func TestFirewallPoliciesPre64(t *testing.T) {
 	c.prepare("api/v2/cmdb/firewall/policy", "testdata/fw-policy-config-pre64.jsonnet")
 	c.prepare("api/v2/cmdb/firewall/policy6", "testdata/fw-policy6-config-pre64.jsonnet")
 	r := prometheus.NewPedanticRegistry()
-	if !testProbe(probeFirewallPolicies, c, r) {
+	if !testProbeWithMetadata(probeFirewallPolicies, c, &TargetMetadata{VersionMajor: 6, VersionMinor: 2}, r) {
 		t.Errorf("probeFirewallPolicies() returned non-success")
 	}
 
@@ -81,7 +81,7 @@ func TestFirewallPolicies(t *testing.T) {
 	c.prepare("api/v2/monitor/firewall/policy/select?ip_version=ipv6", "testdata/fw-policy-v6.jsonnet")
 	c.prepare("api/v2/cmdb/firewall/policy", "testdata/fw-policy-config.jsonnet")
 	r := prometheus.NewPedanticRegistry()
-	if !testProbe(probeFirewallPolicies, c, r) {
+	if !testProbeWithMetadata(probeFirewallPolicies, c, &TargetMetadata{VersionMajor: 6, VersionMinor: 4}, r) {
 		t.Errorf("probeFirewallPolicies() returned non-success")
 	}
 
@@ -129,5 +129,19 @@ func TestFirewallPolicies(t *testing.T) {
 	`
 	if err := testutil.GatherAndCompare(r, strings.NewReader(em)); err != nil {
 		t.Fatalf("metric compare: err %v", err)
+	}
+}
+
+func TestFirewallPoliciesEmptyResult(t *testing.T) {
+	c := newFakeClient()
+	c.prepare("api/v2/monitor/firewall/policy/select?ip_version=ipv4", "testdata/fw-policy-empty.jsonnet")
+	c.prepare("api/v2/monitor/firewall/policy/select?ip_version=ipv6", "testdata/fw-policy-empty.jsonnet")
+	c.prepare("api/v2/cmdb/firewall/policy", "testdata/fw-policy-config.jsonnet")
+	r := prometheus.NewPedanticRegistry()
+	if !testProbeWithMetadata(probeFirewallPolicies, c, &TargetMetadata{VersionMajor: 7, VersionMinor: 4}, r) {
+		t.Fatal("probeFirewallPolicies() returned non-success for empty result")
+	}
+	if n, err := testutil.GatherAndCount(r); err != nil || n != 0 {
+		t.Errorf("expected no metrics, got %d (err: %v)", n, err)
 	}
 }
