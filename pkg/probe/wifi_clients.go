@@ -26,7 +26,7 @@ func probeWifiClients(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]pro
 		clientInfo = prometheus.NewDesc(
 			"fortigate_wifi_client_info",
 			"Number of connected access points by status",
-			[]string{"vdom", "mac", "hostname", "wtp_name"}, nil,
+			[]string{"vdom", "mac", "hostname", "wtp_name", "ssid"}, nil,
 		)
 		clientDataRate = prometheus.NewDesc(
 			"fortigate_wifi_client_data_rate_bps",
@@ -76,6 +76,7 @@ func probeWifiClients(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]pro
 		TxRetryPercentage   float64 `json:"tx_retry_percentage"`
 		Hostname            string  `json:"hostname,omitempty"`
 		WtpName             string  `json:"wtp_name"`
+		SSID                string  `json:"ssid,omitempty"`
 	}
 
 	type APIWifiClientResponse []struct {
@@ -93,7 +94,7 @@ func probeWifiClients(c fortigatehttpclient.FortiHTTP, _ *TargetMetadata) ([]pro
 	var m []prometheus.Metric
 	for _, rs := range response {
 		for _, result := range rs.Results {
-			m = append(m, prometheus.MustNewConstMetric(clientInfo, prometheus.CounterValue, 1, rs.VDOM, result.MAC, result.Hostname, result.WtpName))
+			m = append(m, prometheus.MustNewConstMetric(clientInfo, prometheus.CounterValue, 1, rs.VDOM, result.MAC, result.Hostname, result.WtpName, result.SSID))
 			m = append(m, prometheus.MustNewConstMetric(clientDataRate, prometheus.GaugeValue, result.DataRateBps, rs.VDOM, result.MAC))
 			m = append(m, prometheus.MustNewConstMetric(wtpBandwidthRx, prometheus.GaugeValue, result.BandwidthRx, rs.VDOM, result.MAC))
 			m = append(m, prometheus.MustNewConstMetric(wtpBandwidthTx, prometheus.GaugeValue, result.BandwidthTx, rs.VDOM, result.MAC))

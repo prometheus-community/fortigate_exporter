@@ -44,8 +44,8 @@ func TestProbeClients(t *testing.T) {
         fortigate_wifi_client_data_rate_bps{mac="00:00:00:AA:00:00",vdom="root"} 1.3e+08
         # HELP fortigate_wifi_client_info Number of connected access points by status
         # TYPE fortigate_wifi_client_info counter
-        fortigate_wifi_client_info{hostname="",mac="00:00:00:AA:00:00",vdom="root",wtp_name="3rd Floor"} 1
-        fortigate_wifi_client_info{hostname="wled-WLED",mac="00:00:00:00:00:00",vdom="root",wtp_name="2nd Floor"} 1
+        fortigate_wifi_client_info{hostname="",mac="00:00:00:AA:00:00",ssid="example-SSID",vdom="root",wtp_name="3rd Floor"} 1
+        fortigate_wifi_client_info{hostname="wled-WLED",mac="00:00:00:00:00:00",ssid="example-SSID",vdom="root",wtp_name="2nd Floor"} 1
         # HELP fortigate_wifi_client_signal_noise_dBm Signal noise on the frequency of the client
         # TYPE fortigate_wifi_client_signal_noise_dBm gauge
         fortigate_wifi_client_signal_noise_dBm{mac="00:00:00:00:00:00",vdom="root"} -95
