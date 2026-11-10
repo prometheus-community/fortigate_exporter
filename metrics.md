@@ -57,6 +57,15 @@ Global:
  * _WebUI/State_
    * `fortigate_last_reboot_seconds`
    * `fortigate_last_snapshot_seconds`
+ * _System/Sandbox_
+   * `fortigate_sandbox_status_signature_count`
+   * `fortigate_sandbox_connection_state`
+   * `fortigate_sandbox_stats_clean_total`
+   * `fortigate_sandbox_stats_detected_total`
+   * `fortigate_sandbox_stats_risk_high_total`
+   * `fortigate_sandbox_stats_risk_medium_total`
+   * `fortigate_sandbox_stats_risk_low_total`
+   * `fortigate_sandbox_stats_submitted_total`
 
 Per-VDOM:
 

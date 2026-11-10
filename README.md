@@ -190,6 +190,9 @@ To improve security, limit permissions to required ones only (least privilege pr
 |System/Resource/Usage/VDOM   | sysgrp.cfg         |api/v2/monitor/system/resource/usage |
 |System/SensorInfo            | sysgrp.cfg         |api/v2/monitor/system/sensor-info |
 |System/Status                | *any*              |api/v2/monitor/system/status |
+|System/Sandbox/Connection    | sysgrp.cfg         |api/v2/monitor/system/sandbox/connection|
+|System/Sandbox/Status        | sysgrp.cfg         |api/v2/monitor/system/sandbox/status|
+|System/Sandbox/Stats         | sysgrp.cfg         |api/v2/monitor/system/sandbox/stats|
 |System/Time/Clock            | sysgrp.cfg         |api/v2/monitor/system/time |
 |System/System/VDOMResource   | sysgrp.cfg         |api/v2/monitor/system/vdom-resource |
 |User/Fsso                    | authgrp            |api/v2/monitor/user/fsso |
