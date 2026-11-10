@@ -14,8 +14,13 @@
 package probe
 
 import (
+	"bytes"
+	"errors"
+	"log"
+	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/testutil"
@@ -24,6 +29,7 @@ import (
 func TestProbeManagedSwitch(t *testing.T) {
 	c := newFakeClient()
 	c.prepare("api/v2/monitor/switch-controller/managed-switch/status", "testdata/managed-switch.jsonnet")
+	c.prepare("api/v2/cmdb/system/global", "testdata/system-global-location.jsonnet")
 	meta := &TargetMetadata{
 		VersionMajor: 6,
 		VersionMinor: 4,
@@ -192,6 +198,9 @@ func TestProbeManagedSwitch(t *testing.T) {
 		fortigate_managed_switch_l3_packets_total{port="port7",switch_name="FOO-SW-01",vdom="root"} 0
 		fortigate_managed_switch_l3_packets_total{port="port8",switch_name="FOO-SW-01",vdom="root"} 0
 		fortigate_managed_switch_l3_packets_total{port="port9",switch_name="FOO-SW-01",vdom="root"} 0
+		# HELP fortigate_managed_switch_join_timestamp_seconds Unix timestamp of when the switch last joined FortiLink (resets on reboot or FortiLink reconnection)
+		# TYPE fortigate_managed_switch_join_timestamp_seconds gauge
+		fortigate_managed_switch_join_timestamp_seconds{switch_name="FOO-SW-01",vdom="root"} 1649836954
 		# HELP fortigate_managed_switch_max_poe_budget_watt Max poe budget watt
 		# TYPE fortigate_managed_switch_max_poe_budget_watt counter
 		fortigate_managed_switch_max_poe_budget_watt{switch_name="FOO-SW-01",vdom="root"} 370
@@ -852,6 +861,7 @@ func TestProbeManagedSwitch(t *testing.T) {
 func TestProbeManagedSwitchFortiOS74(t *testing.T) {
 	c := newFakeClient()
 	c.prepare("api/v2/monitor/switch-controller/managed-switch/status", "testdata/managed-switch-74.jsonnet")
+	c.prepare("api/v2/cmdb/system/global", "testdata/system-global-location.jsonnet")
 	meta := &TargetMetadata{
 		VersionMajor: 7,
 		VersionMinor: 4,
@@ -885,6 +895,9 @@ func TestProbeManagedSwitchFortiOS74(t *testing.T) {
 		# TYPE fortigate_managed_switch_l3_packets_total counter
 		fortigate_managed_switch_l3_packets_total{port="port1",switch_name="FOO-SW-74",vdom="root"} 0
 		fortigate_managed_switch_l3_packets_total{port="port2",switch_name="FOO-SW-74",vdom="root"} 0
+		# HELP fortigate_managed_switch_join_timestamp_seconds Unix timestamp of when the switch last joined FortiLink (resets on reboot or FortiLink reconnection)
+		# TYPE fortigate_managed_switch_join_timestamp_seconds gauge
+		fortigate_managed_switch_join_timestamp_seconds{switch_name="FOO-SW-74",vdom="root"} 1704060000
 		# HELP fortigate_managed_switch_max_poe_budget_watt Max poe budget watt
 		# TYPE fortigate_managed_switch_max_poe_budget_watt counter
 		fortigate_managed_switch_max_poe_budget_watt{switch_name="FOO-SW-74",vdom="root"} 370
@@ -976,5 +989,52 @@ func TestProbeManagedSwitchFortiOS74(t *testing.T) {
 
 	if err := testutil.GatherAndCompare(r, strings.NewReader(em)); err != nil {
 		t.Fatalf("metric compare: err %v", err)
+	}
+}
+
+func TestSwitchJoinTime(t *testing.T) {
+	asuncion, err := time.LoadLocation("America/Asuncion")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		name string
+		raw  float64
+		text string
+		loc  *time.Location
+		want float64
+		ok   bool
+	}{
+		{"raw value wins", 1704067200, "Mon Jan 1 00:00:00 2024", asuncion, 1704067200, true},
+		{"text in FortiGate timezone", 0, "Tue Sep 29 17:19:47 2026", asuncion, 1790713187, true},
+		{"space-padded day and newline", 0, "Thu Jul  9 18:15:53 2026\n", asuncion, 1783631753, true},
+		{"no timezone", 0, "Tue Sep 29 17:19:47 2026", nil, 0, false},
+		{"empty", 0, "", asuncion, 0, false},
+		{"unparseable", 0, "yesterday", asuncion, 0, false},
+	} {
+		got, ok := switchJoinTime(tc.raw, tc.text, tc.loc)
+		if ok != tc.ok || got != tc.want {
+			t.Errorf("%s: switchJoinTime() = %v, %v; want %v, %v", tc.name, got, ok, tc.want, tc.ok)
+		}
+	}
+}
+
+type failingClient struct{}
+
+func (failingClient) Get(path, _ string, _ any) error {
+	return errors.New(`response code was 403, expected 200 (path: "` + path + `")`)
+}
+
+func TestFortigateLocationWarnsOnce(t *testing.T) {
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+	defer log.SetOutput(os.Stderr)
+	for range 3 {
+		if loc := fortigateLocation(failingClient{}); loc != nil {
+			t.Fatalf("fortigateLocation() = %v, want nil", loc)
+		}
+	}
+	if n := strings.Count(buf.String(), "cannot read system timezone"); n != 1 {
+		t.Errorf("warning logged %d times, want 1:\n%s", n, buf.String())
 	}
 }
