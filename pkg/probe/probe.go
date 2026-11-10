@@ -37,6 +37,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"sync"
 
 	"github.com/prometheus/client_golang/prometheus"
 
@@ -48,7 +49,10 @@ import (
 type Collector struct {
 	metrics []prometheus.Metric
 }
-
+type probeResult struct {
+	metrics []prometheus.Metric
+	ok      bool
+}
 type TargetMetadata struct {
 	VersionMajor int
 	VersionMinor int
@@ -124,9 +128,9 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 	includedProbes := savedConfig.AuthKeys[config.Target(u.String())].Probes.Include
 	excludedProbes := savedConfig.AuthKeys[config.Target(u.String())].Probes.Exclude
 
-	// TODO: Make parallel
-	success := true
-	for _, aProbe := range []probeDetailedFunc{
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	allProbes := []probeDetailedFunc{
 		// Always keep probeSystemTime on top of the list to have the probe processed first.
 		// Therefore time returned is more accurate when integrated in Prometheus because
 		// timestamp for the metrics probe, in Prometheus, is obtained from the query time, not the reply time.
@@ -173,7 +177,10 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		{"Wifi/ManagedAP", probeWifiManagedAP},
 		{"Switch/ManagedSwitch", probeManagedSwitch},
 		{"OSPF/Neighbors", probeOSPFNeighbors},
-	} {
+	}
+	success := true
+	results := make(chan probeResult, len(allProbes))
+	for _, aProbe := range allProbes {
 		wanted := false
 
 		if len(includedProbes) == 0 {
@@ -199,14 +206,32 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		if !wanted {
 			continue
 		}
+		wg.Add(1)
+		go func(probe probeDetailedFunc) {
+			defer wg.Done()
+			m, ok := aProbe.function(c, meta)
+			results <- probeResult{
+				metrics: m,
+				ok:      ok,
+			}
+		}(aProbe)
 
-		m, ok := aProbe.function(c, meta)
-		if !ok {
-			success = false
-		}
-		p.metrics = append(p.metrics, m...)
 	}
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+	for res := range results {
+		mu.Lock()
+		p.metrics = append(p.metrics, res.metrics...)
+		mu.Unlock()
 
+		if !res.ok {
+			mu.Lock()
+			success = false
+			mu.Unlock()
+		}
+	}
 	return success, nil
 }
 
