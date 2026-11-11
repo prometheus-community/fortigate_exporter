@@ -292,3 +292,10 @@ Per-VDOM, managed switch and interface:
   * `fortigate_managed_switch_tx_packets_total`
   * `fortigate_managed_switch_tx_ucast_packets_total`
   * `fortigate_managed_switch_under_size_total`
+* _Switch/ManagedSwitchHealth_
+  * `fortigate_managed_switch_cpu_mode_ratio`
+  * `fortigate_managed_switch_cpu_usage_ratio`
+  * `fortigate_managed_switch_health_good`
+  * `fortigate_managed_switch_memory_usage_ratio`
+  * `fortigate_managed_switch_temperature_celsius`
+  * `fortigate_managed_switch_uptime_seconds`
