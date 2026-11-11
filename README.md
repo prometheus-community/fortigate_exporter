@@ -201,6 +201,7 @@ To improve security, limit permissions to required ones only (least privilege pr
 |Wifi/Clients                 | wifi               |api/v2/monitor/wifi/client |
 |Wifi/ManagedAP               | wifi               |api/v2/monitor/wifi/managed_ap |
 |Switch/ManagedSwitch         | switch	           |api/v2/monitor/switch-controller/managed-switch|
+|Switch/ManagedSwitchHealth   | switch             |api/v2/monitor/switch-controller/managed-switch/health, health-status (7.6+)|
 If you omit to grant some of these permissions you will receive log messages warning about
 403 errors and relevant metrics will be unavailable, but other metrics will still work.
 If you do not need some probes to be run, do not grant permission for them and use `include/exclude` feature (see `Usage` section).
