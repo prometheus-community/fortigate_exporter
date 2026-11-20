@@ -172,6 +172,7 @@ func (p *Collector) Probe(ctx context.Context, target map[string]string, hc *htt
 		{"Wifi/Clients", probeWifiClients},
 		{"Wifi/ManagedAP", probeWifiManagedAP},
 		{"Switch/ManagedSwitch", probeManagedSwitch},
+		{"Switch/ManagedSwitchHealth", probeManagedSwitchHealth},
 		{"OSPF/Neighbors", probeOSPFNeighbors},
 	} {
 		wanted := false
