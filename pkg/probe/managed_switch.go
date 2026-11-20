@@ -45,6 +45,11 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) (
 			"Port status up=1 down=0",
 			[]string{"vdom", "switch_name", "port"}, nil,
 		)
+		portSpeed = prometheus.NewDesc(
+			"fortigate_managed_switch_port_speed_bps",
+			"Negotiated port speed in bits per second",
+			[]string{"vdom", "switch_name", "port"}, nil,
+		)
 		portPower = prometheus.NewDesc(
 			"fortigate_managed_switch_port_power_watt",
 			"Port power in watt",
@@ -260,6 +265,7 @@ func probeManagedSwitch(c fortigatehttpclient.FortiHTTP, meta *TargetMetadata) (
 					m = append(m, prometheus.MustNewConstMetric(portStatus, prometheus.GaugeValue, 0, result.VDOM, switchName, port.Interface))
 				}
 				m = append(m, prometheus.MustNewConstMetric(portInfo, prometheus.GaugeValue, 1, result.VDOM, switchName, port.Interface, port.Vlan, port.Duplex, port.Status, port.PoeStatus, strconv.FormatBool(port.PoeCapable)))
+				m = append(m, prometheus.MustNewConstMetric(portSpeed, prometheus.GaugeValue, port.Speed*1e6, result.VDOM, switchName, port.Interface))
 				m = append(m, prometheus.MustNewConstMetric(portPower, prometheus.GaugeValue, port.PortPower, result.VDOM, switchName, port.Interface))
 				m = append(m, prometheus.MustNewConstMetric(portPowerStatus, prometheus.GaugeValue, port.PowerStatus, result.VDOM, switchName, port.Interface))
 

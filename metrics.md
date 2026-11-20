@@ -274,6 +274,7 @@ Per-VDOM, managed switch and interface:
   * `fortigate_managed_switch_port_info`
   * `fortigate_managed_switch_port_power_status`
   * `fortigate_managed_switch_port_power_watt`
+  * `fortigate_managed_switch_port_speed_bps`
   * `fortigate_managed_switch_port_status`
   * `fortigate_managed_switch_rx_bcast_packets_total`
   * `fortigate_managed_switch_rx_bytes_total`
