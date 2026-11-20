@@ -36,6 +36,7 @@ import (
 	"runtime"
 	"runtime/debug"
 	"strings"
+	_ "time/tzdata" // the container image has no zoneinfo; used by the managed switch probe
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
